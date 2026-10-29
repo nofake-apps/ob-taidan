@@ -1,5 +1,5 @@
 // オフライン用：一度開いたら、通信なしでも動くように保存しておく
-const CACHE = "ob-taidan-v11";
+const CACHE = "ob-taidan-v12";
 const FILES = ["./", "./index.html", "./manifest.json", "./logo.png", "./apple-touch-icon.png", "./DotGothic16-Regular.ttf"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener("activate", e => {

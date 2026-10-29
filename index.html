@@ -15,6 +15,29 @@ body::before{left:0}
 body::after{right:0}
 .logo{width:min(56vw,640px);height:auto;align-self:flex-start}
 .logo-sm{width:min(26vw,300px)}
+.logo-c{align-self:center}
+.btn.dim{opacity:.55}
+.planbar{display:flex;justify-content:space-between;align-items:center;gap:2vw;position:sticky;top:0;background:var(--bg);z-index:4;padding:1vh 0}
+#s-plan{justify-content:flex-start;gap:1.6vh;padding-bottom:14vh}
+#s-plan h1{font-size:clamp(22px,3.4vw,40px)}
+#s-plan h2{font-size:clamp(16px,2.2vw,26px)}
+#s-plan .cand{margin-top:.6vh;padding:1.2vh 1.6vw;display:flex;align-items:center;justify-content:space-between;gap:1.6vw;flex-wrap:wrap}
+#s-plan .cand h3{font-size:clamp(15px,2vw,24px)}
+#s-plan .cand .row{margin-top:0!important}
+#s-plan .cand .btn{font-size:clamp(13px,1.5vw,18px);padding:.6vh 1.2vw}
+#s-plan .cand .row{gap:1vw;flex-wrap:nowrap}
+.pool{display:grid;grid-template-columns:repeat(2,1fr);gap:1vh 1.6vw}
+.fixbar{position:fixed;left:0;right:0;bottom:0;padding:1.4vh 0;text-align:center;background:linear-gradient(transparent,var(--bg) 40%);z-index:4;display:flex;justify-content:center}
+#s-plan:not(.on) .fixbar{display:none}
+details.more{margin-top:1vh} details.more summary{color:var(--sub);cursor:pointer;font-size:clamp(14px,1.7vw,20px);padding:1vh 0}
+details.card>summary{font-size:clamp(18px,2.4vw,28px);font-weight:900;cursor:pointer;color:var(--accent)}
+#s-rules,#s-toast,#s-intro{align-items:center;text-align:center}
+#s-rules .card,#s-intro .card{text-align:left;align-self:center;max-width:92vw}
+.one-line{white-space:nowrap;font-size:clamp(18px,3.4vw,46px);text-align:center}
+#s-rules ol{display:inline-block;text-align:left}
+#s-theme .row{position:sticky;bottom:2vh}
+@media (orientation:landscape){ #s-theme{padding:3vh 5vw;gap:2vh} #s-rules,#s-toast,#s-intro{gap:1.6vh;padding:2.5vh 6vw} #s-rules .logo-c,#s-toast .logo-c{width:min(24vw,280px)} #s-rules li,#s-rules p{font-size:clamp(15px,1.9vw,24px);line-height:1.45} #s-rules .card{padding:1.6vh 3vw} #s-rules .btn{padding:1.6vh 4vw} #s-rules .btn.small{padding:.6vh 1.6vw} }
+@media (orientation:portrait){ .one-line{white-space:normal} }
 .screen{background:radial-gradient(ellipse at 50% 30%,#1c1c20 0%,#0b0b0c 70%)}
 .pill{align-self:flex-start;background:var(--accent);color:#0b0b0c;padding:.15em .9em;font-size:clamp(20px,2.6vw,34px)}
 .col{display:flex;flex-direction:column;gap:2vh;align-items:flex-start}
@@ -24,6 +47,8 @@ body::after{right:0}
 .cand p{font-size:clamp(14px,1.8vw,22px);line-height:1.6}
 .slash{width:min(32vw,420px);height:.9vh;min-height:8px;background:var(--accent);transform:skewX(-35deg);align-self:flex-start}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+button,label,input,select,textarea{touch-action:manipulation}
+.btn{min-height:44px}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif;user-select:none;-webkit-user-select:none}
 .screen{display:none;min-height:100%;padding:6vh 6vw;flex-direction:column;justify-content:center;gap:3vh}
 .screen.on{display:flex}
@@ -72,7 +97,12 @@ ul,ol{margin:0;padding-left:1.4em}
 .top-left{position:fixed;top:1.2vh;left:1.5vw;opacity:.3}
 .top-left2{position:fixed;top:1.2vh;left:9vw;opacity:.3}
 .top-left3{position:fixed;top:1.2vh;left:20vw;opacity:.3}
-.topbar{position:fixed;top:1.2vh;left:1.5vw;display:flex;gap:1vw;opacity:.35;z-index:5}
+.simbox{position:fixed;top:calc(1.2vh + 62px);left:1.5vw;z-index:6;background:#1b1b22;border:2px solid #f4f1ea;border-radius:8px;padding:1.2vh 1.6vw;max-width:94vw;font-size:clamp(12px,1.5vw,18px)}
+.simbox .btn{margin:.4vh .5vw .4vh 0}
+.tools{display:flex;gap:1vw;overflow:hidden;max-width:0;opacity:0;transition:max-width .35s ease,opacity .25s ease;white-space:nowrap}
+.tools.open{max-width:90vw;opacity:1}
+.topbar{position:fixed;top:1.2vh;left:1.5vw;display:flex;gap:1vw;opacity:.5;z-index:5;align-items:center}
+#b-gear{font-size:clamp(28px,4vw,48px);line-height:1;padding:.5vh 1.2vw}
 .proj{background:var(--card);border-left:8px solid #3a3a40;padding:2vh 2vw;margin-bottom:1.6vh;display:flex;flex-direction:column;gap:1vh}
 .proj.run{border-left-color:var(--accent)}
 .proj h3{margin:0;font-size:clamp(22px,3vw,40px);font-weight:900}
@@ -136,21 +166,22 @@ body.rpg::before,body.rpg::after{display:none}
 
 <!-- 1 ルール -->
 <section class="screen rpgs" id="s-rules">
-  <img class="logo" src="logo.png" alt="NoFAKE">
-  <h1>ようこそ。ここはOBだけの部屋です。</h1>
-  <div class="card">
-    <ol>
-      <li>飲み食いは自由です。好きなように話してください。</li>
-      <li>先にマイクを付けてください（名前のテープが貼ってある、ご自分のマイクです）。</li>
-      <li>カメラは回っています。スタッフは同じ部屋にいますが、映りません。困ったら声をかけてください。</li>
-      <li>画面にテーマが出ます。時間が来たら、チーンと鳴ります。</li>
-      <li>鳴る1分前に、予告の音が出ます。いいところで区切ってください。</li>
-      <li>全員の準備ができたら、下のボタンを押してください。</li>
-    </ol>
-  </div>
-  <label class="chk"><input type="checkbox" id="consent"> 撮影と動画の公開に同意します</label>
-  <button class="btn" id="b-start" disabled>全員そろいました</button>
+  <img class="logo logo-c" src="logo.png" alt="NoFAKE">
+  <h1 id="rules-h" class="one-line"></h1>
+  <div class="card"><ol id="rules-list"></ol></div>
+  <p id="rules-body"></p>
+  <p class="lead" id="rules-lead"></p>
+  <label class="chk" id="consent-row"><input type="checkbox" id="consent"> <span id="consent-t"></span></label>
+  <p class="banner hide" id="consent-note" style="background:var(--warn);color:#fff">先に、上の同意にチェックを入れてください</p>
+  <button class="btn" id="b-start"></button>
   <button class="btn ghost small" id="b-rules-back">← タイトルに戻る</button>
+</section>
+
+<!-- 1.2 乾杯 -->
+<section class="screen rpgs" id="s-toast">
+  <img class="logo logo-c" src="logo.png" alt="NoFAKE">
+  <h1 id="toast-msg" class="one-line"></h1>
+  <button class="btn" id="b-toast-done"></button>
 </section>
 
 <!-- 1.5 スタッフ設定（撮影前だけ） -->
@@ -186,8 +217,36 @@ body.rpg::before,body.rpg::after{display:none}
       <select id="set-img"><option value="2">4K（高画質）</option><option value="1">フルHD</option></select>
     </label>
   </div>
-  <div class="card">
-    <h2>AIでテーマを作る</h2>
+  <details class="card">
+    <summary>画面の文章・ボタン・音</summary>
+    <p class="lead" style="font-size:clamp(13px,1.6vw,20px)">最初の説明の画面と、乾杯・自己紹介の画面の文章を書き換えられます。{school}は学校名、{n}はテーマの数に置き換わります。空にすると初期の文章に戻ります。</p>
+    <label>あいさつ（1行） <input type="text" id="set-t-welcome" style="flex:1"></label>
+    <label style="align-items:flex-start">ルール（1行に1つ。番号が付きます）<textarea id="set-t-rules" rows="5"></textarea></label>
+    <label style="align-items:flex-start">ルールの説明文<textarea id="set-t-body" rows="3"></textarea></label>
+    <label>ボタンの前の一文 <input type="text" id="set-t-lead" style="flex:1"></label>
+    <label>同意の文 <input type="text" id="set-t-consent" style="flex:1"></label>
+    <label>最初のボタン <input type="text" id="set-t-btn" style="flex:1"></label>
+    <label>乾杯の画面の文 <input type="text" id="set-t-toast" style="flex:1"></label>
+    <label>乾杯のボタン <input type="text" id="set-t-toastbtn" style="flex:1"></label>
+    <label>自己紹介の見出し（1行） <input type="text" id="set-t-introtitle" style="flex:1"></label>
+    <label>自己紹介の小見出し <input type="text" id="set-t-introhead" style="flex:1"></label>
+    <label style="align-items:flex-start">自己紹介で言ってほしいこと（1行に1つ）<textarea id="set-t-intro" rows="5"></textarea></label>
+    <label>自己紹介のあとの一文 <input type="text" id="set-t-introlead" style="flex:1"></label>
+    <label>自己紹介のボタン <input type="text" id="set-t-introbtn" style="flex:1"></label>
+    <h2 style="margin-top:2vh">画面・ボタンのオン・オフ</h2>
+    <label><input type="checkbox" id="set-u-consent"> 同意のチェックを出す</label>
+    <label><input type="checkbox" id="set-u-toast"> 乾杯の画面を出す</label>
+    <label><input type="checkbox" id="set-u-intro"> 自己紹介の画面を出す</label>
+    <label><input type="checkbox" id="set-u-help"> 「話が止まったら」のボタンを出す</label>
+    <h2 style="margin-top:2vh">音</h2>
+    <label><input type="checkbox" id="set-s-on"> 音を鳴らす</label>
+    <label>時間の音 <select id="set-s-chime"></select> <button class="btn ghost small" id="t-chime">試す</button></label>
+    <label>1分前の予告音 <select id="set-s-warn"></select> <button class="btn ghost small" id="t-warn">試す</button></label>
+    <label>音の大きさ <input type="range" id="set-s-vol" min="0.2" max="1" step="0.1"></label>
+    <button class="btn ghost small" id="b-texts-reset" style="align-self:flex-start">文章を初期の状態に戻す</button>
+  </details>
+  <details class="card">
+    <summary>AIでテーマ案を作る</summary>
     <p class="lead" style="font-size:clamp(14px,1.8vw,22px)">学校名とメモをもとに、話しやすく、見たくなるテーマ案を作ります。「伸びそうか」の判断は、AIの一般的な知識によるものです。過去の動画の再生数などを下のメモに貼ると、それを踏まえた案になります。</p>
     <label style="align-items:flex-start">メモ（任意）<textarea id="ai-memo" rows="3" placeholder="例：監督の話を多めに／伸びた動画のタイトルと再生数を貼る"></textarea></label>
     <div class="row" style="justify-content:flex-start;margin:1vh 0">
@@ -199,25 +258,19 @@ body.rpg::before,body.rpg::after{display:none}
     <button class="btn ghost small" id="ai-import" style="align-self:flex-start">貼り付けた案を読み込む</button>
     <p class="lead" id="ai-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
     <div id="ai-list"></div>
-  </div>
+  </details>
   <button class="btn" id="b-set-save">保存してタイトルに戻る</button>
 </section>
 
 <!-- 2 自己紹介 -->
 <section class="screen rpgs" id="s-intro">
-  <h1>まず、順番に自己紹介をお願いします</h1>
+  <h1 id="intro-h1" class="one-line"></h1>
   <div class="card">
-    <h2>これだけは言ってください</h2>
-    <ul>
-      <li>名前</li>
-      <li>年齢</li>
-      <li id="intro-kiki"></li>
-      <li>背番号（なければ「なし」でOK）</li>
-      <li>当時のポジション</li>
-    </ul>
+    <h2 id="intro-h2"></h2>
+    <ul id="intro-list"></ul>
   </div>
-  <p class="lead">全員の自己紹介が終わったら、下のボタンを押してください。</p>
-  <button class="btn" id="b-intro-done">全員の自己紹介が終わりました</button>
+  <p class="lead" id="intro-lead"></p>
+  <button class="btn" id="b-intro-done"></button>
 </section>
 
 <!-- 3 テーマ -->
@@ -231,7 +284,6 @@ body.rpg::before,body.rpg::after{display:none}
   <div class="slash"></div>
   </div>
   <div class="win" id="t-msg">
-  <p class="lead typed" id="t-lead"></p>
   <div id="t-timer" class="br">--:--</div>
   <div class="banner hide" id="t-warn" style="background:var(--warn);color:#fff">あと1分です。いいところで話をまとめてください</div>
   <div class="banner hide" id="t-up" style="background:#f4f1ea;color:#0b0b0c">時間です。話を区切ってください</div>
@@ -239,19 +291,31 @@ body.rpg::before,body.rpg::after{display:none}
   </div>
   <div class="row">
     <button class="btn ghost" id="b-help">話が止まったら</button>
-    <button class="btn ghost" id="b-extend">あと5分（1回だけ）</button>
-    <button class="btn ghost" id="b-plan">テーマを変える</button>
     <button class="btn hide" id="b-next">次のテーマを開く</button>
   </div>
 </section>
 
 <!-- 3.5 テーマを変える（収録中） -->
 <section class="screen rpgs" id="s-plan">
-  <h1>テーマを変える</h1>
-  <p class="lead" style="font-size:clamp(14px,1.9vw,24px)">今のテーマはそのままで、次に進むテーマを選び直せます。「今すぐ始める」を押すと、今のテーマを終えて、そのテーマに移ります。</p>
+  <div class="planbar"><h1>テーマを変える</h1><button class="btn" id="b-plan-close">もどる</button></div>
   <div id="plan-list"></div>
-  <div class="card"><h2>ほかのテーマ</h2><div id="plan-pool"></div></div>
-  <button class="btn" id="b-plan-close">もどる</button>
+  <h2>ほかのテーマ</h2>
+  <div id="plan-pool" class="pool"></div>
+  <div class="card" id="custom-card">
+    <h2>新しく作る</h2>
+    <div class="row" style="justify-content:flex-start;flex-wrap:nowrap">
+      <input type="text" id="cu-title" style="flex:1;min-width:0" placeholder="テーマの名前（例：あの先輩との思い出）">
+      <button class="btn small" id="cu-now">今すぐ</button>
+      <button class="btn ghost small" id="cu-next">次に</button>
+    </div>
+    <details class="more"><summary>くわしく設定する（先に出す質問・時間・AI）</summary>
+      <label style="align-items:flex-start">先に出したい質問（優先順・1行に1つ）<textarea id="cu-mine" rows="3" placeholder="上から順に出ます。使い切ると、次の質問に切り替わります"></textarea></label>
+      <label>時間 <input type="number" id="cu-min" min="5" max="60" step="5" value="15"> 分</label>
+      <label><input type="checkbox" id="cu-ai"> AIに、引きのある質問を作らせる（通信とAPIキーが必要）</label>
+    </details>
+    <p class="lead" id="cu-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
+  </div>
+  <div class="fixbar"><button class="btn" id="b-plan-close2">もどる</button></div>
 </section>
 
 <!-- 4 エンディング -->
@@ -268,10 +332,24 @@ body.rpg::before,body.rpg::after{display:none}
   <p class="lead" id="save-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
 </section>
 
+<div class="simbox hide" id="simbox">
+  <p>時間テスト（本番では使わない）。押すと、時計が進みます。</p>
+  <button class="btn ghost small" data-sim="-300">－5分</button>
+  <button class="btn ghost small" data-sim="-60">－1分</button>
+  <button class="btn ghost small" data-sim="60">＋1分</button>
+  <button class="btn ghost small" data-sim="300">＋5分</button>
+  <button class="btn ghost small" data-sim="warn">残り1分へ（予告）</button>
+  <button class="btn ghost small" data-sim="end">時間切れへ</button>
+</div>
 <div class="topbar">
+<button class="btn ghost small" id="b-gear" aria-label="設定">⚙</button>
+<div class="tools" id="tools">
+<button class="btn ghost small" id="b-plan">テーマを変える</button>
+<button class="btn ghost small" id="b-sim">時間テスト</button>
 <button class="btn ghost small" id="b-log">記録</button>
-<button class="btn ghost small" id="b-home">タイトルへ</button>
 <button class="btn ghost small" id="b-backup">バックアップ</button>
+<button class="btn ghost small" id="b-home">タイトルへ</button>
+</div>
 </div>
 
 <script>
@@ -318,10 +396,21 @@ const TEMPLATE = [
     "今のサッカーと、自分たちの頃との一番の違いは？","今の{school}の試合を見て、悔しい・うれしいと思った瞬間は？","{school}のサッカーの「らしさ」とは何だと思いますか？",
     "母校のために、OBとして今できることは？","次に集まるなら、誰を呼びたい？","今日話してみて、いちばん笑ったのは？"]},
 ];
+
+// お題を増やす（オフライン用。同じ質問が戻りにくいように、テーマごとに追加）
+const EXTRA = {
+ enter:["最初に着たユニフォームやジャージの記憶は？","入学してすぐ、一番緊張した場面は？","最初の1か月で「やめようかな」と思ったことは？","当時の自分の得意なプレーは？","憧れていた選手は誰でしたか？","入学前に、{school}の何を知っていましたか？","同期の中での自分の立ち位置は？","初めて試合のメンバーに入った日のことは？","一年生のとき、雑用で大変だったことは？","通学路や、よく通ったお店の思い出は？","最初にできた友達は誰？","入部してすぐ、驚いた「{school}ならでは」のことは？","スパイクや道具へのこだわりはありましたか？","当時の髪型や服装のルールは？","初めて先輩に話しかけられたときのことは？","入学式の日、どんな気持ちでしたか？","入る前と後で、サッカーの見方はどう変わった？","両親は{school}に入ることをどう思っていた？","入学した年の同期の目標は？","当時の自分に、一つだけアドバイスするなら？","最初に「うまい！」と思った先輩は？","最初のランニングやフィジカルで、驚いたことは？","朝は何時に起きていましたか？","一年生のときの、一番の失敗は？","もし入学前に戻れるなら、何を準備しますか？"],
+ coach:["監督が一番うれしそうだった瞬間は？","練習前後の、決まりごとやルーティンは？","試合前の監督のひとことで、印象的だったものは？","朝練・午後練、どちらが好きでしたか？","ミーティングの雰囲気はどんなでしたか？","練習の最後に、いつもやっていたことは？","コーチや先輩に教わって、人生が変わった一言は？","自主練はどこで、何をやっていましたか？","一番好きだった練習メニューは？","走り込みで、一番つらかった距離やメニューは？","練習中に一番笑った出来事は？","怒られたときの、逃げ方・乗り切り方は？","当時のグラウンドの、好きだった場所は？","暑い日・寒い日の、練習の工夫は？","監督の口ぐせは何でしたか？","練習試合で、監督の指示が当たった話は？","ケガをしたときの、監督の対応は？","当時は分からなくて、あとで分かった指導の意味は？","練習後の食事やおにぎりの思い出は？","チームの決まりで、一番厳しかったものは？","「あの先輩の練習態度は本当にすごかった」という話は？","後輩に厳しくした（された）記憶は？","練習で一番上達を感じた時期は？","テスト期間の練習はどうしていましたか？","今、同じ練習をやれと言われたら何分もちますか？"],
+ match:["試合の日の朝ごはんは何でしたか？","試合前に必ずやっていたルーティンは？","自分のベストゴール・ベストプレーは？","一番緊張した試合は？","審判の判定で、今でも納得いかない場面は？","ハーフタイムに言われたことで、流れが変わった試合は？","スタンドの声援で、力が出た瞬間は？","PK戦の思い出はありますか？","試合中のケガや、倒れた記憶は？","ライバルに初めて勝った試合は？","試合の帰り道、バスの中の空気は？","ユニフォームや背番号に込めた思いは？","一番練習した得意なプレーが決まった試合は？","「この試合は絶対に負けられない」と思った理由は？","交代で出たときの気持ちは？","負けて泣いたことはありますか？","勝った日の夜は、どう過ごしましたか？","試合前日の夜は眠れましたか？","試合で一番長く感じた時間は？","相手のエースを抑えた（抑えられた）話は？","一番うまかった味方選手は誰ですか？","記憶に残る応援歌やコールは？","もう一度出られるなら、どの試合ですか？","一番寒かった（暑かった）試合は？","「あの試合を境に変わった」と思う試合は？"],
+ mates:["同期の中で、一番サッカーがうまかったのは誰？","今も会うと盛り上がる仲間は誰ですか？","同期のムードメーカーは？","同期の中で、一番頭が良かった人は？","一番遅刻が多かったのは誰？","仲間に励まされた一言は？","仲間の意外な一面を知った出来事は？","同期のあだ名の由来は？","寮や部室での、みんなの定位置は？","チーム内の流行りや、はやったものは？","練習後に必ず行った場所は？","マネージャーさんや、支えてくれた人の思い出は？","キャプテンは誰で、どんな人でしたか？","一番仲が良かった後輩・先輩は誰？","仲間とやった、サッカー以外の遊びは？","同期が今、何をしているか知っている？","チームがバラバラになりかけたことは？","卒業式の日、仲間と何を話しましたか？","仲間に「ありがとう」と言いたいことは？","自分のことを、仲間は何と言っていたと思う？","最後の大会が終わった日、仲間とどう過ごした？","このメンバー以外とのチームは考えられますか？","全員の中で、一番変わったのは誰ですか？","一番ライバル視していた同期は？","いま初めて会うメンバーがいるなら、第一印象は？"],
+ secret:["いま思えば恥ずかしい、自分のこだわりは？","寮や合宿での、夜の過ごし方は？","先生に怒られた中で、一番ひどかったのは？","試合中に起きた、笑ってはいけない出来事は？","差し入れや買い食いの、定番は？","携帯やゲームのルールは、どうでしたか？","部の決まりを破った、時効の話は？","一番モテた（と思う）のは誰ですか？","恋愛にまつわる、胸にしまってきた話は？","テストや宿題で、ピンチだった話は？","先輩からの無茶ぶりで、忘れられないものは？","ユニフォームやスパイクの、ちょっとした失敗は？","遠征先でのやらかしは？","部室に隠していたものは？","自分だけが知っている、仲間の秘密は？","髪型・服装のルールを破った話は？","当時の自分に今も言えない、本音は？","ドッキリやいたずらの思い出は？","サッカー以外で、熱中していたものは？","一番お腹が空いた日の話は？","当時の自分がやっていた、変なジンクスは？","朝練に遅れそうになった、大ピンチの話は？","実は一番サボっていたと思う人は？","お小遣いや食事で、苦労した話は？","今だから言えるけど、実は嫌いだった練習は？"],
+ next:["{school}で身についた「くせ」は今もありますか？","後輩のプレーで、一番印象に残っているのは？","OBとして、試合を見に行きたい気持ちはありますか？","サッカーを続けていてよかったことは？","もしコーチをやるなら、何を教えたい？","{school}の誇れるところは？","当時の自分に会ったら、まず何を話す？","高校サッカーが終わったあと、一番変わったことは？","後輩に伝えたい、勝つための考え方は？","いま高校生にやってほしくない（やってほしい）ことは？","サッカー王国・静岡で育ったことを、どう思う？","いまの仕事で、サッカーの経験が生きた場面は？","自分の子どもがサッカーを始めたらどう思う？","この3人で、また集まるならどこで何をしたい？","今日、久しぶりに話して一番うれしかったことは？","高校時代の自分を、点数にするなら何点？","後悔していることがあれば、一つだけ？","今の高校生に、一番うらやましいことは？","サッカーを続けた人・やめた人、それぞれにひとこと","当時の仲間に、いま伝えたい言葉は？","10年後、{school}はどうなっていてほしい？","高校サッカーは、自分にとって何でしたか？","もう一度、あの冬の選手権に出られるなら？","未来の{school}の選手に、サインを書くなら何と書く？","今日の話の最後に、一番言いたいことは？"]
+};
+TEMPLATE.forEach(t=>{ if(EXTRA[t.id]) t.hints.push(...EXTRA[t.id]); });
 // 型（どのテーマを何分で使うか）
 const PRESETS = {
   p120: {enter:25, coach:25, match:25, secret:25, next:20},   // 合計120分
-  p90:  {enter:25, match:25, secret:20, next:20},             // 合計90分
+  p90:  {enter:15, coach:15, match:15, secret:15, next:15},   // 既定：5テーマ×15分＝75分（＋乾杯・自己紹介で約90分）
 };
 const WARN_SEC = 60;
 const EXTEND_SEC = 5*60;
@@ -332,7 +421,7 @@ const warnSec = FAST ? 3 : WARN_SEC;
 // ========= プロジェクトと保存 =========
 // プロジェクト＝1回の収録の単位（例：静岡学園 オープニング）。設定・記録・途中経過を、プロジェクトごとに端末へ自動保存する
 const defaults = () => ({school:"静岡学園", timer:"br", warnmsg:false, imgScale:2, custom:[], over:{},
-  themes: TEMPLATE.map(t=>({id:t.id, on: t.id in PRESETS.p120, minutes: PRESETS.p120[t.id]||20, mine:[]}))});
+  themes: TEMPLATE.map(t=>({id:t.id, on: t.id in PRESETS.p90, minutes: PRESETS.p90[t.id]||15, mine:[]}))});
 let cfg = defaults();
 let pid = null;                      // 今のプロジェクトのid
 let runPhase = "none";               // 収録の進み具合: none / rules / intro / theme / end
@@ -354,14 +443,19 @@ const tpl = id => {
   const o = (cfg.over||{})[id]; if(!o) return base;
   return Object.assign({}, base, {title:o.title||base.title, lead:(o.lead!==undefined?o.lead:base.lead)});
 };
-const screens = ["s-title","s-rules","s-set","s-intro","s-theme","s-plan","s-end"];
-const PHASE_OF = {"s-rules":"rules","s-intro":"intro","s-theme":"theme"};
+const screens = ["s-title","s-rules","s-toast","s-set","s-intro","s-theme","s-plan","s-end"];
+const PHASE_OF = {"s-rules":"rules","s-toast":"toast","s-intro":"intro","s-theme":"theme"};
 function show(id){
   screens.forEach(s=>$(s).classList.toggle("on",s===id));
   $("b-log").classList.toggle("hide", id==="s-set" || id==="s-title");
-  const inRun = ["s-rules","s-intro","s-theme"].includes(id);
+  const inRun = ["s-rules","s-toast","s-intro","s-theme"].includes(id);
+  if(["s-rules","s-toast","s-intro"].includes(id)) applyTexts();
   $("b-home").classList.toggle("hide", !inRun);
   $("b-backup").classList.toggle("hide", !inRun);
+  $("b-plan").classList.toggle("hide", id!=="s-theme");
+  $("b-sim").classList.toggle("hide", id!=="s-theme");
+  $("b-gear").classList.toggle("hide", id==="s-set" || id==="s-title");
+  $("tools").classList.remove("open"); $("simbox").classList.add("hide");   // 画面が変わったら、帯は閉じる
   if(PHASE_OF[id]){ runPhase = PHASE_OF[id]; saveSession(); }
   if(id==="s-title") renderTitle();
   window.scrollTo(0,0);
@@ -397,7 +491,8 @@ function resumeSession(){
   const st = lsGet("ob-session:"+pid, null); if(!st) return false;
   plan = st.plan || [];
   if(st.phase==="rules"){ show("s-rules"); return true; }
-  if(st.phase==="intro"){ $("intro-kiki").textContent = `${cfg.school}の何期生か`; show("s-intro"); return true; }
+  if(st.phase==="toast"){ show("s-toast"); return true; }
+  if(st.phase==="intro"){ show("s-intro"); return true; }
   if(st.phase==="theme"){
     if(!plan.length || plan.some(t=>!tpl(t.id))){ alert("テーマの情報が見つかりません。最初からやり直してください"); clearSession(); return false; }
     idx = st.idx; extended = !!st.extended; warned = !!st.warned; upDone = !!st.upDone;
@@ -429,6 +524,7 @@ function statusOf(id){
   if(st.phase==="theme") return {txt:`本編の途中：テーマ${st.idx+1} / ${(st.plan||[]).length}（${st.upDone?"時間切れの状態":"残り "+fmtMs(st.left||0)}）`, run:true};
   return {txt:"準備の途中", run:true};
 }
+const srcLabel = x => x==="mine" ? "自作" : x==="aigen" ? "AI生成" : "用意済み";
 function mkBtn(label, cls, fn){ const b=document.createElement("button"); b.className="btn "+cls; b.textContent=label; b.onclick=fn; return b; }
 function renderTitle(){
   const box = $("proj-list"); box.innerHTML = "";
@@ -538,13 +634,18 @@ function renderSet(){
   $("set-warnmsg").checked = cfg.warnmsg;
   $("set-img").value = String(cfg.imgScale||2);
   $("set-look").value = (lsGet("ob-look","rpg"));
+  Object.keys(TEXT_IDS).forEach(k=>{ $(TEXT_IDS[k]).value = (cfg.texts && cfg.texts[k]) || DEF_TEXT[k]; });
+  ["consent","toast","intro","help"].forEach(k=>{ $("set-u-"+k).checked = U(k); });
+  const sd = SND(); $("set-s-on").checked = sd.on; $("set-s-vol").value = sd.vol;
+  ["set-s-chime","set-s-warn"].forEach(id=>{ $(id).innerHTML = Object.keys(SOUNDS).map(k=>`<option value="${k}">${SOUNDS[k][0]}</option>`).join(""); });
+  $("set-s-chime").value = sd.chime; $("set-s-warn").value = sd.warn;
   try{ $("ai-key").value = localStorage.getItem("ob-aikey") || ""; }catch(e){}
   $("set-themes").innerHTML = ALL().map(t0=>{
     const t = tpl(t0.id);
     const c = cfg.themes.find(x=>x.id===t.id) || {on:false, minutes:20, mine:[]};
     return `<tr><td><input type="checkbox" data-on="${t.id}" ${c.on?"checked":""}></td><td><input type="text" data-title="${t.id}" value="${esc(t.title)}" style="width:100%">${t.custom?` <button class="btn ghost small" data-del="${t.id}">削除</button>`:""}</td>
       <td><input type="number" min="5" max="90" step="5" data-min="${t.id}" value="${c.minutes}"> 分</td></tr>
-      <tr><td></td><td colspan="2"><input type="text" data-lead="${t.id}" value="${esc(t.lead)}" style="width:100%" placeholder="リード（画面に出る補足）"></td></tr>
+      <tr><td></td><td colspan="2"><input type="text" data-lead="${t.id}" value="${esc(t.lead)}" style="width:100%" placeholder="メモ（画面には出ません。記録用）"></td></tr>
       <tr><td></td><td colspan="2"><textarea rows="2" data-mine="${t.id}" placeholder="このテーマで先に出したい自作のお題（1行に1つ。使い切るとAIのお題に切り替わります）">${(c.mine||[]).join("\n")}</textarea></td></tr>`;
   }).join("");
   document.querySelectorAll("[data-on],[data-min]").forEach(e=>e.onchange=totalSet);
@@ -572,6 +673,9 @@ function collectSet(){
   cfg.timer = $("set-timer").value;
   cfg.warnmsg = $("set-warnmsg").checked;
   cfg.imgScale = +$("set-img").value || 2;
+  cfg.texts = {}; Object.keys(TEXT_IDS).forEach(k=>{ const v = $(TEXT_IDS[k]).value.trim(); if(v && v !== DEF_TEXT[k]) cfg.texts[k] = v; });
+  cfg.ui = {}; ["consent","toast","intro","help"].forEach(k=>{ cfg.ui[k] = $("set-u-"+k).checked; });
+  cfg.snd = {on:$("set-s-on").checked, chime:$("set-s-chime").value, warn:$("set-s-warn").value, vol:+$("set-s-vol").value || 1};
   cfg.over = cfg.over || {};
   ALL().forEach(t=>{ const ti = document.querySelector(`[data-title="${t.id}"]`).value.trim(), le = document.querySelector(`[data-lead="${t.id}"]`).value.trim(); cfg.over[t.id] = {title: ti || t.title, lead: le}; });
   cfg.themes = ALL().map(t=>({id:t.id,
@@ -596,10 +700,14 @@ $("b-addtheme").onclick = () => {
   const lead = prompt("リード（画面に出る一言。空でもOK）", "") || "";
   collectSet();
   const id = "c" + Date.now() + Math.floor(Math.random()*1000);
-  (cfg.custom = cfg.custom||[]).push({id, title:title.trim(), lead:lead.trim(), hints:["この話で、一番印象に残っていることは？","そのとき、まわりはどんな様子でしたか？"], custom:true});
+  (cfg.custom = cfg.custom||[]).push({id, title:title.trim(), lead:lead.trim(), hints:GENERIC_Q.map(q=>q.replaceAll("{T}",title.trim())), custom:true});
   cfg.themes.push({id, on:true, minutes:20, mine:[]});
   saveCfg(); renderSet();
 };
+const testSound = k => { cfg.snd = {on:true, chime:$("set-s-chime").value, warn:$("set-s-warn").value, vol:+$("set-s-vol").value||1}; ctx(); playSound(k==="warn"?cfg.snd.warn:cfg.snd.chime); };
+$("t-chime").onclick = () => testSound("chime");
+$("t-warn").onclick = () => testSound("warn");
+$("b-texts-reset").onclick = () => { if(!confirm("画面の文章を、初期の文章に戻しますか？")) return; Object.keys(TEXT_IDS).forEach(k=>{ $(TEXT_IDS[k]).value = DEF_TEXT[k]; }); };
 $("p120").onclick = () => applyPreset("p120");
 $("p90").onclick = () => applyPreset("p90");
 $("b-set-save").onclick = saveAndTitle;
@@ -688,7 +796,7 @@ function renderHist(){
     const d = document.createElement("div");
     d.className = e.kind==="theme" ? "th" : "sm";
     d.textContent = e.kind==="theme" ? `${hhmmss(e.iso)}  テーマ${e.n}「${e.title}」`
-      : e.kind==="hint" ? `${hhmmss(e.iso)}　お題（${e.src==="mine"?"自作":"AI"}）：${e.text}`
+      : e.kind==="hint" ? `${hhmmss(e.iso)}　お題（${srcLabel(e.src)}）：${e.text}`
       : `${hhmmss(e.iso)}　${e.text}`;
     h.appendChild(d);
   });
@@ -696,7 +804,7 @@ function renderHist(){
 }
 let backTo = "s-rules";
 function openHist(finished){
-  backTo = ["s-title","s-rules","s-intro","s-theme"].find(id=>$(id).classList.contains("on")) || "s-title";
+  backTo = ["s-title","s-rules","s-toast","s-intro","s-theme"].find(id=>$(id).classList.contains("on")) || "s-title";
   if(finished){ runPhase = "end"; saveSession(); }
   $("end-h").textContent = finished ? "ありがとうございました" : "話したテーマの記録";
   $("end-p").classList.toggle("hide", !finished);
@@ -832,7 +940,7 @@ async function exportZip(){
   const rows = [["時刻","開始からの経過","種類","テーマ","内容"]];
   events.forEach(e=>{
     if(e.kind==="theme") curTheme = e.title;
-    rows.push([hhmmss(e.iso), elapsed(e.iso), e.kind==="theme"?"テーマ":e.kind==="hint"?(e.src==="mine"?"お題(自作)":"お題(AI)"):"出来事", e.kind==="theme"?e.title:(e.theme||curTheme), e.kind==="theme"?(e.lead||""):e.text]);
+    rows.push([hhmmss(e.iso), elapsed(e.iso), e.kind==="theme"?"テーマ":e.kind==="hint"?"お題("+srcLabel(e.src)+")":"出来事", e.kind==="theme"?e.title:(e.theme||curTheme), e.kind==="theme"?(e.lead||""):e.text]);
   });
   const csv = "﻿" + rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
   files.push({name:"記録.csv", data:enc.encode(csv)});
@@ -852,6 +960,7 @@ $("b-save").onclick = exportZip;
 let ac;
 function ctx(){ if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==="suspended") ac.resume(); return ac; }
 function bell(freq=880, dur=2.4, gain=0.5){
+  gain *= SND().vol;
   const a = ctx(), now = a.currentTime;
   [1,2.76,5.4].forEach((m,i)=>{
     const o = a.createOscillator(), g = a.createGain();
@@ -861,15 +970,35 @@ function bell(freq=880, dur=2.4, gain=0.5){
     o.connect(g).connect(a.destination); o.start(now); o.stop(now+dur);
   });
 }
-const chime = () => { bell(880,2.6,0.55); setTimeout(()=>bell(1175,2.6,0.45),380); };   // チーン
-const warnSound = () => { bell(660,1.2,0.3); setTimeout(()=>bell(660,1.2,0.3),500); };   // 予告音
+function beep(freq, dur, gain, type="sine"){
+  const a = ctx(), now = a.currentTime, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(gain*SND().vol, now); g.gain.exponentialRampToValueAtTime(0.0001, now+dur);
+  o.connect(g).connect(a.destination); o.start(now); o.stop(now+dur);
+}
+const SOUNDS = {
+  chime:["チーン（2回）", ()=>{ bell(880,2.6,0.55); setTimeout(()=>bell(1175,2.6,0.45),380); }],
+  bell:["ベル（1回）", ()=>bell(1047,3,0.6)],
+  gong:["ゴング（低く長く）", ()=>bell(220,4,0.7)],
+  pingpong:["ピンポン", ()=>{ beep(988,0.4,0.4); setTimeout(()=>beep(740,0.7,0.4),350); }],
+  pon:["ポン（短く）", ()=>beep(660,0.35,0.4)],
+  warn:["ポーン・ポーン（予告）", ()=>{ bell(660,1.2,0.3); setTimeout(()=>bell(660,1.2,0.3),500); }],
+  buzzer:["ブザー", ()=>beep(180,0.9,0.25,"square")]
+};
+const playSound = k => { if(!SND().on) return; try{ (SOUNDS[k]||SOUNDS.chime)[1](); }catch(e){} };
+const chime = () => playSound(SND().chime);
+const warnSound = () => playSound(SND().warn);
 let wl; async function keepAwake(){ try{ wl = await navigator.wakeLock.request("screen"); }catch(e){} }
 
 // ========= 進行 =========
-$("consent").onchange = e => $("b-start").disabled = !e.target.checked;
-$("b-start").onclick = () => { ctx(); keepAwake();
-  stamp("全員そろった（同意あり）");
-  $("intro-kiki").textContent = `${cfg.school}の何期生か`; show("s-intro"); };
+$("consent").onchange = e => { $("b-start").classList.toggle("dim", U("consent") && !e.target.checked); $("consent-note").classList.add("hide"); };
+function afterToast(){ if(U("intro")) show("s-intro"); else startTheme(0); }
+$("b-start").onclick = () => {
+  if(U("consent") && !$("consent").checked){ $("consent-note").classList.remove("hide"); $("consent-row").scrollIntoView({block:"center"}); return; }
+  ctx(); keepAwake();
+  stamp(U("consent") ? "全員そろった（同意あり）" : "全員そろった");
+  if(U("toast")) show("s-toast"); else afterToast(); };
+$("b-toast-done").onclick = () => { stamp("乾杯"); afterToast(); };
 $("b-intro-done").onclick = () => { stamp("自己紹介おわり"); startTheme(0); };
 
 let plan = [], idx = 0, endAt = 0, tick = null, warned = false, extended = false, upDone = false, curHint = "";
@@ -880,13 +1009,11 @@ function paintTheme(){
   $("dots").innerHTML = plan.map((_,k)=>`<div class="dot ${k<idx?"done":k===idx?"now":""}"></div>`).join("");
   $("t-count").textContent = `${cfg.school}OB対談　テーマ ${idx+1} / ${plan.length}`;
   $("t-title").textContent = sub(t.title);
-  typeText($("t-lead"), sub(t.lead));
   $("t-warn").classList.toggle("hide", !(warned && cfg.warnmsg && !upDone));
   $("t-up").classList.toggle("hide", !upDone);
   $("t-hint").classList.toggle("hide", !curHint || upDone);
   typeText($("t-hint-text"), curHint ? (isRpg() ? curHint : "💬 " + curHint) : "");
-  $("b-help").classList.toggle("hide", upDone);
-  $("b-extend").classList.toggle("hide", upDone || extended);
+  $("b-help").classList.toggle("hide", upDone || !U("help"));
   $("b-next").classList.toggle("hide", !upDone);
   $("b-next").textContent = idx===plan.length-1 ? "おしまいにする" : "次のテーマを開く";
   $("t-timer").className = cfg.timer;
@@ -903,6 +1030,35 @@ function startTheme(i){
   paintTheme(); show("s-theme");
   clearInterval(tick); tick = setInterval(update, 250); update();
 }
+
+// ========= 画面の文章・ボタン・音（設定で書き換え可） =========
+const DEF_TEXT = {
+  welcome:"ようこそ。ここはOBだけの部屋です。",
+  rules:["飲み物は自由です。","先にマイクをつけてください。","カメラが回っています。","何か困ったら、スタッフに声をかけてください。","画面にテーマが出ます。"].join("\n"),
+  body:"これから{n}つのテーマに沿って、自由に話してもらいます。テーマが終わると「チーン」と鳴りますので、次のテーマに進んでください。時間の1分前には、予告の音が鳴ります。そうしたら、いいところで区切ってください。",
+  lead:"最後に、全員の準備ができたら、ボタンを押してください。",
+  consent:"撮影と動画の公開に同意します", btn:"全員そろいました",
+  toast:"まずは、飲み物を注文してください。注文したら、乾杯をしてください。", toastbtn:"乾杯しました",
+  introtitle:"まずは、自己紹介をお願いします。", introhead:"これだけは言ってください",
+  intro:["名前","年齢","{school}の何期生か","背番号（なければ「なし」でOK）","当時のポジション"].join("\n"),
+  introlead:"全員の自己紹介が終わったら、下のボタンを押してください。", introbtn:"全員の自己紹介が終わりました"
+};
+const TEXT_IDS = {welcome:"set-t-welcome",rules:"set-t-rules",body:"set-t-body",lead:"set-t-lead",consent:"set-t-consent",btn:"set-t-btn",toast:"set-t-toast",toastbtn:"set-t-toastbtn",introtitle:"set-t-introtitle",introhead:"set-t-introhead",intro:"set-t-intro",introlead:"set-t-introlead",introbtn:"set-t-introbtn"};
+const nThemes = () => (plan && plan.length) ? plan.length : cfg.themes.filter(t=>t.on).length;
+const T = k => { const v = cfg.texts && cfg.texts[k]; return String((v && v.trim()) ? v : DEF_TEXT[k]).replaceAll("{school}", cfg.school).replaceAll("{n}", nThemes()); };
+const U = k => !(cfg.ui && cfg.ui[k] === false);
+const SND = () => Object.assign({on:true, chime:"chime", warn:"warn", vol:1}, cfg.snd||{});
+function fillList(el, text){ el.innerHTML = ""; text.split("\n").map(x=>x.trim()).filter(Boolean).forEach(x=>{ const li=document.createElement("li"); li.textContent=x; el.appendChild(li); }); }
+function applyTexts(){
+  $("rules-h").textContent = T("welcome"); fillList($("rules-list"), T("rules"));
+  $("rules-body").textContent = T("body"); $("rules-lead").textContent = T("lead");
+  $("consent-t").textContent = T("consent"); $("b-start").textContent = T("btn");
+  $("consent-row").classList.toggle("hide", !U("consent"));
+  $("b-start").disabled = false; $("b-start").classList.toggle("dim", U("consent") && !$("consent").checked);
+  $("toast-msg").textContent = T("toast"); $("b-toast-done").textContent = T("toastbtn");
+  $("intro-h1").textContent = T("introtitle"); $("intro-h2").textContent = T("introhead"); fillList($("intro-list"), T("intro"));
+  $("intro-lead").textContent = T("introlead"); $("b-intro-done").textContent = T("introbtn");
+}
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 let lastSave = 0;
 function update(){
@@ -915,7 +1071,7 @@ function update(){
   if(left<=0 && !upDone){
     upDone = true; clearInterval(tick); chime();
     $("t-warn").classList.add("hide"); $("t-up").classList.remove("hide");
-    ["b-extend","b-help","t-hint"].forEach(id=>$(id).classList.add("hide"));
+    ["b-help","t-hint"].forEach(id=>$(id).classList.add("hide"));
     $("b-next").classList.remove("hide");
     stamp(`テーマ${idx+1} チーン（時間）`); saveSession();
   }
@@ -925,18 +1081,28 @@ $("b-help").onclick = () => {
   // 自作のお題を先に、使い切ったらAIのお題（それも使い切ったら入れ直す）
   let q, src;
   if(mineQ.length){ q = mineQ.shift(); src = "mine"; }
-  else { if(!aiQ.length) aiQ = shuffle(tpl(plan[idx].id).hints.slice()); q = sub(aiQ.pop()); src = "ai"; }
+  else { if(!aiQ.length) aiQ = shuffle(tpl(plan[idx].id).hints.slice()); q = sub(aiQ.pop()); src = tpl(plan[idx].id).aiGen ? "aigen" : "ai"; }
   curHint = q;
   typeText($("t-hint-text"), isRpg() ? q : "💬 " + q);
   $("t-hint").classList.remove("hide");
   stamp(q, {kind:"hint", src, theme:sub(tpl(plan[idx].id).title), title:sub(tpl(plan[idx].id).title)});
   saveSession();
 };
-$("b-extend").onclick = () => {
-  if(extended) return; extended = true; endAt += EXTEND_SEC*1000*SCALE;
-  warned = false; $("t-warn").classList.add("hide"); $("b-extend").classList.add("hide");
-  stamp(`テーマ${idx+1} 延長`); saveSession();
-};
+$("b-gear").onclick = () => { $("tools").classList.toggle("open"); if(!$("tools").classList.contains("open")) $("simbox").classList.add("hide"); };
+$("b-sim").onclick = () => $("simbox").classList.toggle("hide");
+document.querySelectorAll("[data-sim]").forEach(b => b.onclick = () => {
+  const v = b.dataset.sim;
+  if(upDone && !(v[0]==="-")) return;   // 時間切れのあとは、戻すボタンだけ使える
+  if(v==="end") endAt = Date.now();
+  else if(v==="warn") endAt = Math.min(endAt, Date.now() + warnSec*1000 + 1500);
+  else if(v[0]==="-"){
+    endAt = Math.max(endAt, Date.now()) + Math.abs(Number(v))*1000*SCALE;   // 時間を戻す（時間切れ後は、そこから戻して再開）
+    warned = (endAt-Date.now()) <= warnSec*1000;
+    if(upDone){ upDone = false; paintTheme(); clearInterval(tick); tick = setInterval(update, 250); }
+  }
+  else endAt -= Number(v)*1000*SCALE;
+  stamp(`テーマ${idx+1} （時間テスト：時計を${v[0]==="-"?"戻した":"進めた"}）`); update();
+});
 function renderPlan(){
   const box = $("plan-list"); box.innerHTML = "";
   plan.forEach((it,i)=>{
@@ -976,8 +1142,53 @@ function planJump(i){
   stamp(`テーマ変更：「${sub(ct.title)}」の途中で「${sub(nt.title)}」へ`);
   ctx(); startTheme(idx+1);
 }
-$("b-plan").onclick = () => { renderPlan(); show("s-plan"); };
-$("b-plan-close").onclick = () => { paintTheme(); show("s-theme"); };
+$("b-plan").onclick = () => { renderPlan(); show("s-plan"); $("cu-ai").checked = !!lsGetKey(); $("tools").classList.remove("open"); };
+function lsGetKey(){ try{ return localStorage.getItem("ob-aikey") || ""; }catch(e){ return ""; } }
+// 新しい大テーマ：自分の質問（優先）→ AIのフック質問（なければ汎用の質問）
+const GENERIC_Q = ["「{T}」で、いちばん印象に残っている出来事は？","「{T}」について、今だから言える話は？","「{T}」で、当時は言えなかった本音は？","「{T}」の中で、いちばん笑った話は？","「{T}」で、いちばん悔しかったことは？","「{T}」で、今も忘れられない一言は？","「{T}」について、他の2人はどう覚えている？","「{T}」の、みんなが知らない裏話は？","「{T}」で、いちばんの失敗談は？","「{T}」があったから今の自分がある、と思う？","「{T}」で、あの頃の自分に言いたいことは？","「{T}」の、一番ドキドキした瞬間は？","「{T}」で、仲間に感謝していることは？","「{T}」の、最高の1日を選ぶなら？","「{T}」を、今の高校生に伝えるなら？","「{T}」で、今だから笑える失敗は？","「{T}」で、いちばん意外だったことは？","「{T}」の、誰も覚えていなさそうな細かい記憶は？"];
+function hookPrompt(title){
+  return `あなたは、静岡の高校サッカーを扱うYouTubeチャンネル「NoFAKE」の企画担当です。
+${cfg.school}のOB（素人）が3人、司会なしで食べ飲みしながら話す対談の、大テーマ「${title}」について、話が止まったときに出す質問を25個考えてください。
+条件：
+- YouTubeで視聴者が引き込まれる、フックの効いた質問にする（本音・失敗・意外な裏話・「ここだけの話」を引き出す）
+- 素人でも答えやすい、具体的な一文にする。1つ20〜45字
+- 実在の人物名や出来事を作らない。当時のエピソードを引き出す質問にする
+出力は次のJSONだけ：{"hints":["","…"]}`;
+}
+async function makeHooks(id, title){
+  const key = lsGetKey(); const msg = $("cu-msg");
+  if(!key){ msg.textContent = "APIキーがないので、用意済みの汎用の質問を使います（設定画面でキーを入れると、AIの質問になります）"; return; }
+  msg.textContent = "AIが質問を考えています…";
+  try{
+    const r = await fetch("https://api.anthropic.com/v1/messages", {method:"POST",
+      headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body: JSON.stringify({model:"claude-sonnet-5-5", max_tokens:3000, messages:[{role:"user", content: hookPrompt(title)}]})});
+    const j = await r.json(); if(!r.ok) throw new Error((j.error&&j.error.message)||r.status);
+    const txt = (j.content||[]).map(x=>x.text||"").join(""); const a = txt.indexOf("{"), b = txt.lastIndexOf("}");
+    const hints = (JSON.parse(txt.slice(a,b+1)).hints||[]).map(String).map(h=>h.trim()).filter(Boolean).slice(0,40);
+    if(hints.length<5) throw new Error("質問が少なすぎました");
+    const c = (cfg.custom||[]).find(x=>x.id===id); if(!c) return;
+    c.hints = hints; c.aiGen = true; saveCfg();
+    if(plan[idx] && plan[idx].id===id) aiQ = shuffle(hints.slice());
+    msg.textContent = `AIの質問を${hints.length}個、保存しました`;
+  }catch(e){ msg.textContent = "AIの質問は作れませんでした（" + e.message + "）。用意済みの汎用の質問を使います"; }
+}
+function customCreate(now){
+  const title = $("cu-title").value.trim(); if(!title){ $("cu-msg").textContent = "大テーマを入れてください"; return; }
+  const mine = $("cu-mine").value.split("\n").map(x=>x.trim()).filter(Boolean);
+  const id = "c" + Date.now() + Math.floor(Math.random()*1000);
+  (cfg.custom = cfg.custom||[]).push({id, title, lead:"", hints:GENERIC_Q.map(q=>q.replaceAll("{T}",title)), custom:true});
+  cfg.themes.push({id, on:false, minutes:+$("cu-min").value||15, mine});
+  saveCfg(); stamp(`カスタムテーマ「${title}」を作成（先に出す質問${mine.length}個）`);
+  const wantAi = $("cu-ai").checked;
+  $("cu-title").value = ""; $("cu-mine").value = "";
+  if(wantAi) makeHooks(id, title); else $("cu-msg").textContent = "作りました。用意済みの汎用の質問を使います";
+  planAdd(id, now);
+}
+$("cu-now").onclick = () => customCreate(true);
+$("cu-next").onclick = () => customCreate(false);
+const closePlan = () => { paintTheme(); show("s-theme"); };
+$("b-plan-close").onclick = closePlan; $("b-plan-close2").onclick = closePlan;
 $("b-next").onclick = () => {
   if(idx < plan.length-1){ ctx(); startTheme(idx+1); }
   else { stamp("おしまい"); openHist(true); }
