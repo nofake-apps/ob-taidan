@@ -18,6 +18,13 @@ body::after{right:0}
 .logo-c{align-self:center}
 #t-msg:not(:has(.hint:not(.hide),.banner:not(.hide),#t-timer.big)){display:none}
 .btn.dim{opacity:.55}
+.trow{display:flex;align-items:center;gap:1vw;margin-top:1vh;flex-wrap:wrap}
+.trow input[type=checkbox]{width:1.8em;height:1.8em}
+.trow .tname{flex:1;min-width:30%;font-size:clamp(16px,2vw,24px);padding:.8vh 1vw;background:#121214;color:var(--fg);border:1px solid #3a3a40}
+.step{display:flex;align-items:center;gap:.6vw}
+.step input{width:3.6em;text-align:center;font-size:clamp(16px,2vw,24px);padding:.8vh .4vw;background:#121214;color:var(--fg);border:1px solid #3a3a40}
+.qbox{margin:.4vh 0 1.4vh 3vw}
+.qbox textarea{width:100%;font-size:clamp(14px,1.8vw,22px);padding:.8vh 1vw;background:#121214;color:var(--fg);border:1px solid #3a3a40;font-family:inherit}
 .planbar{display:flex;justify-content:space-between;align-items:center;gap:2vw;position:sticky;top:0;background:var(--bg);z-index:4;padding:1vh 0}
 #s-plan{justify-content:flex-start;gap:1.6vh;padding-bottom:14vh}
 #s-plan h1{font-size:clamp(22px,3.4vw,40px)}
@@ -192,13 +199,18 @@ body.rpg::before,body.rpg::after{display:none}
   <div class="card">
     <label>プロジェクト名 <input type="text" id="set-name" style="flex:1"></label>
     <label>学校名 <input type="text" id="set-school" style="flex:1"></label>
-    <div class="row" style="justify-content:flex-start;margin:1vh 0">
-      <button class="btn ghost small" id="p120">2時間の型</button>
-      <button class="btn ghost small" id="p90">90分の型</button>
+    <label>AIのキー（任意・この端末にだけ保存）<input type="password" id="ai-key" style="flex:1" autocomplete="off" placeholder="入れると、質問をAIが自動で用意します"></label>
+    <p class="lead" id="hook-status" style="font-size:clamp(13px,1.6vw,20px)"></p>
+    <h2>テーマ</h2>
+    <div id="set-themes"></div>
+    <div class="row" style="justify-content:flex-start;flex-wrap:nowrap">
+      <input type="text" id="new-theme" placeholder="新しいテーマの名前" style="flex:1;min-width:0">
+      <button class="btn small" id="b-addtheme">＋ 追加</button>
     </div>
-    <table id="set-themes"></table>
-    <p class="lead" style="font-size:clamp(13px,1.6vw,20px)">テーマの名前とリードは、そのまま書き換えられます（{school} は学校名に置き換わります）。</p>
-    <button class="btn ghost small" id="b-addtheme">＋ テーマを自分で作る</button>
+    <div class="row" style="justify-content:flex-start;margin:1vh 0">
+      <button class="btn ghost small" id="p90">標準に戻す（5テーマ×20分）</button>
+      <button class="btn ghost small" id="b-hooks-redo">AIの質問を作り直す</button>
+    </div>
     <p class="lead" id="set-total"></p>
   </div>
   <div class="card">
@@ -238,6 +250,7 @@ body.rpg::before,body.rpg::after{display:none}
     <label><input type="checkbox" id="set-u-consent"> 同意のチェックを出す</label>
     <label><input type="checkbox" id="set-u-toast"> 乾杯の画面を出す</label>
     <label><input type="checkbox" id="set-u-intro"> 自己紹介の画面を出す</label>
+    <label><input type="checkbox" id="set-u-auto"> テーマが始まったら、最初の質問を自動で出す</label>
     <label><input type="checkbox" id="set-u-help"> 「話が止まったら」のボタンを出す</label>
     <h2 style="margin-top:2vh">音</h2>
     <label><input type="checkbox" id="set-s-on"> 音を鳴らす</label>
@@ -254,7 +267,6 @@ body.rpg::before,body.rpg::after{display:none}
       <button class="btn small" id="ai-run">AIに作ってもらう（通信が必要）</button>
       <button class="btn ghost small" id="ai-copy">依頼文をコピー（Claudeに頼む）</button>
     </div>
-    <label>APIキー（この端末にだけ保存）<input type="password" id="ai-key" style="flex:1" autocomplete="off"></label>
     <label style="align-items:flex-start">AIの案を貼り付ける<textarea id="ai-paste" rows="4" placeholder="Claudeが作った案（JSON）を貼り付けて、下のボタンを押す"></textarea></label>
     <button class="btn ghost small" id="ai-import" style="align-self:flex-start">貼り付けた案を読み込む</button>
     <p class="lead" id="ai-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
@@ -309,11 +321,10 @@ body.rpg::before,body.rpg::after{display:none}
       <button class="btn small" id="cu-now">今すぐ</button>
       <button class="btn ghost small" id="cu-next">次に</button>
     </div>
-    <details class="more"><summary>くわしく設定する（先に出す質問・時間・AI）</summary>
+    <details class="more"><summary>くわしく設定する（先に出す質問・時間）</summary>
       <label style="align-items:flex-start">先に出したい質問（優先順・1行に1つ）<textarea id="cu-mine" rows="3" placeholder="上から順に出ます。使い切ると、次の質問に切り替わります"></textarea></label>
       <label>時間 <input type="number" id="cu-min" min="5" max="60" step="5" value="15"> 分</label>
-      <label><input type="checkbox" id="cu-ai"> AIに、引きのある質問を作らせる（通信とAPIキーが必要）</label>
-    </details>
+          </details>
     <p class="lead" id="cu-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
   </div>
   <div class="fixbar"><button class="btn" id="b-plan-close2">もどる</button></div>
@@ -410,8 +421,7 @@ const EXTRA = {
 TEMPLATE.forEach(t=>{ if(EXTRA[t.id]) t.hints.push(...EXTRA[t.id]); });
 // 型（どのテーマを何分で使うか）
 const PRESETS = {
-  p120: {enter:25, coach:25, match:25, secret:25, next:20},   // 合計120分
-  p90:  {enter:15, coach:15, match:15, secret:15, next:15},   // 既定：5テーマ×15分＝75分（＋乾杯・自己紹介で約90分）
+  p90:  {enter:20, coach:20, match:20, secret:20, next:20},   // 既定：5テーマ×20分＝100分
 };
 const WARN_SEC = 60;
 const EXTEND_SEC = 5*60;
@@ -422,7 +432,7 @@ const warnSec = FAST ? 3 : WARN_SEC;
 // ========= プロジェクトと保存 =========
 // プロジェクト＝1回の収録の単位（例：静岡学園 オープニング）。設定・記録・途中経過を、プロジェクトごとに端末へ自動保存する
 const defaults = () => ({school:"静岡学園", timer:"br", warnmsg:false, imgScale:2, custom:[], over:{},
-  themes: TEMPLATE.map(t=>({id:t.id, on: t.id in PRESETS.p90, minutes: PRESETS.p90[t.id]||15, mine:[]}))});
+  themes: TEMPLATE.map(t=>({id:t.id, on: t.id in PRESETS.p90, minutes: PRESETS.p90[t.id]||20, mine:[]}))});
 let cfg = defaults();
 let pid = null;                      // 今のプロジェクトのid
 let runPhase = "none";               // 収録の進み具合: none / rules / intro / theme / end
@@ -437,6 +447,8 @@ function saveCfg(){ if(pid) lsSet("ob-config:"+pid, cfg); touch(); }
 const $ = id => document.getElementById(id);
 const sub = s => s.replaceAll("{school}", cfg.school);
 const ALL = () => TEMPLATE.concat(cfg.custom||[]);      // 型のテーマ＋AIで作って追加したテーマ
+const hasHooks = id => ((cfg.hooks||{})[id]||[]).length >= 5;
+const hintsOf = id => hasHooks(id) ? cfg.hooks[id] : tpl(id).hints;
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 // テーマの本体。名前・リードは、設定で直した内容（over）を優先する
 const tpl = id => {
@@ -451,6 +463,7 @@ function show(id){
   $("b-log").classList.toggle("hide", id==="s-set" || id==="s-title");
   const inRun = ["s-rules","s-toast","s-intro","s-theme"].includes(id);
   if(["s-rules","s-toast","s-intro"].includes(id)){ applyTexts(); fitOne(); }
+  if(id==="s-rules") prepHooks();
   $("b-home").classList.toggle("hide", !inRun);
   $("b-backup").classList.toggle("hide", !inRun);
   $("b-plan").classList.toggle("hide", id!=="s-theme");
@@ -555,6 +568,8 @@ const ALLOF = c => TEMPLATE.concat(c.custom||[]);
 function openProject(id){
   pid = id; lsSet("ob-cur", id);
   cfg = Object.assign(defaults(), lsGet("ob-config:"+id, {}));
+  if(!cfg.m20 && cfg.themes.filter(t=>t.on).every(t=>t.minutes===15)){ cfg.themes.forEach(t=>{ if(t.minutes===15) t.minutes = 20; }); }
+  cfg.m20 = true;
   events = lsGet("ob-events:"+id, []);
   runPhase = (lsGet("ob-session:"+id, null) || {}).phase || "none";
 }
@@ -636,7 +651,7 @@ function renderSet(){
   $("set-img").value = String(cfg.imgScale||2);
   $("set-look").value = (lsGet("ob-look","rpg"));
   Object.keys(TEXT_IDS).forEach(k=>{ $(TEXT_IDS[k]).value = (cfg.texts && cfg.texts[k]) || DEF_TEXT[k]; });
-  ["consent","toast","intro","help"].forEach(k=>{ $("set-u-"+k).checked = U(k); });
+  ["consent","toast","intro","help","auto"].forEach(k=>{ $("set-u-"+k).checked = U(k); });
   const sd = SND(); $("set-s-on").checked = sd.on; $("set-s-vol").value = sd.vol;
   ["set-s-chime","set-s-warn"].forEach(id=>{ $(id).innerHTML = Object.keys(SOUNDS).map(k=>`<option value="${k}">${SOUNDS[k][0]}</option>`).join(""); });
   $("set-s-chime").value = sd.chime; $("set-s-warn").value = sd.warn;
@@ -644,13 +659,22 @@ function renderSet(){
   $("set-themes").innerHTML = ALL().map(t0=>{
     const t = tpl(t0.id);
     const c = cfg.themes.find(x=>x.id===t.id) || {on:false, minutes:20, mine:[]};
-    return `<tr><td><input type="checkbox" data-on="${t.id}" ${c.on?"checked":""}></td><td><input type="text" data-title="${t.id}" value="${esc(t.title)}" style="width:100%">${t.custom?` <button class="btn ghost small" data-del="${t.id}">削除</button>`:""}</td>
-      <td><input type="number" min="5" max="90" step="5" data-min="${t.id}" value="${c.minutes}"> 分</td></tr>
-      <tr><td></td><td colspan="2"><input type="text" data-lead="${t.id}" value="${esc(t.lead)}" style="width:100%" placeholder="メモ（画面には出ません。記録用）"></td></tr>
-      <tr><td></td><td colspan="2"><textarea rows="2" data-mine="${t.id}" placeholder="このテーマで先に出したい自作のお題（1行に1つ。使い切るとAIのお題に切り替わります）">${(c.mine||[]).join("\n")}</textarea></td></tr>`;
+    const nh = ((cfg.hooks||{})[t.id]||[]).length;
+    return `<div class="trow"><input type="checkbox" data-on="${t.id}" ${c.on?"checked":""}>
+      <input type="text" class="tname" data-title="${t.id}" value="${esc(t.title)}">
+      <span class="step"><button class="btn ghost small" data-dec="${t.id}">－</button><input type="number" min="5" max="90" step="5" data-min="${t.id}" value="${c.minutes}"><span>分</span><button class="btn ghost small" data-inc="${t.id}">＋</button></span>
+      <button class="btn ghost small" data-q="${t.id}">質問${(c.mine||[]).length?"（"+c.mine.length+"）":""}</button>${t.custom?`<button class="btn ghost small" data-del="${t.id}">削除</button>`:""}</div>
+      <div class="qbox hide" data-qbox="${t.id}"><input type="hidden" data-lead="${t.id}" value="${esc(t.lead)}">
+        <textarea rows="3" data-mine="${t.id}" placeholder="先に出したい質問を、優先順に1行ずつ。使い切ると、AIのフックの効いた質問が自動で出ます">${(c.mine||[]).join("\n")}</textarea>
+        <p class="lead" style="font-size:clamp(13px,1.6vw,20px)">${nh ? "AIの質問："+nh+"個 用意済み" : "AIの質問：まだ（キーを入れて保存すると、自動で用意します）"}</p></div>`;
   }).join("");
   document.querySelectorAll("[data-on],[data-min]").forEach(e=>e.onchange=totalSet);
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>removeCustom(b.dataset.del));
+  const stepMin = (id,d) => { const i = document.querySelector(`[data-min="${id}"]`); i.value = Math.max(5, Math.min(90, (+i.value||20) + d)); totalSet(); };
+  document.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>stepMin(b.dataset.dec,-5));
+  document.querySelectorAll("[data-inc]").forEach(b=>b.onclick=()=>stepMin(b.dataset.inc,5));
+  document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>document.querySelector(`[data-qbox="${b.dataset.q}"]`).classList.toggle("hide"));
+  showHookStatus();
   totalSet();
 }
 function totalSet(){
@@ -675,7 +699,7 @@ function collectSet(){
   cfg.warnmsg = $("set-warnmsg").checked;
   cfg.imgScale = +$("set-img").value || 2;
   cfg.texts = {}; Object.keys(TEXT_IDS).forEach(k=>{ const v = $(TEXT_IDS[k]).value.trim(); if(v && v !== DEF_TEXT[k]) cfg.texts[k] = v; });
-  cfg.ui = {}; ["consent","toast","intro","help"].forEach(k=>{ cfg.ui[k] = $("set-u-"+k).checked; });
+  cfg.ui = {}; ["consent","toast","intro","help","auto"].forEach(k=>{ cfg.ui[k] = $("set-u-"+k).checked; });
   cfg.snd = {on:$("set-s-on").checked, chime:$("set-s-chime").value, warn:$("set-s-warn").value, vol:+$("set-s-vol").value || 1};
   cfg.over = cfg.over || {};
   ALL().forEach(t=>{ const ti = document.querySelector(`[data-title="${t.id}"]`).value.trim(), le = document.querySelector(`[data-lead="${t.id}"]`).value.trim(); cfg.over[t.id] = {title: ti || t.title, lead: le}; });
@@ -688,7 +712,7 @@ function saveAndTitle(){
   collectSet();
   if(!cfg.themes.some(t=>t.on)){ alert("テーマを1つ以上選んでください"); return; }
   try{ const k=$("ai-key").value.trim(); if(k) localStorage.setItem("ob-aikey",k); else localStorage.removeItem("ob-aikey"); }catch(e){}
-  saveCfg(); show("s-title");
+  saveCfg(); show("s-title"); prepHooks();
 }
 function removeCustom(id){
   if(!confirm("このテーマを削除しますか？")) return;
@@ -697,21 +721,21 @@ function removeCustom(id){
   saveCfg(); renderSet();
 }
 $("b-addtheme").onclick = () => {
-  const title = prompt("テーマの名前（例：あの先輩との思い出）"); if(!title) return;
-  const lead = prompt("リード（画面に出る一言。空でもOK）", "") || "";
+  const title = $("new-theme").value.trim(); if(!title){ $("new-theme").focus(); return; }
   collectSet();
   const id = "c" + Date.now() + Math.floor(Math.random()*1000);
-  (cfg.custom = cfg.custom||[]).push({id, title:title.trim(), lead:lead.trim(), hints:GENERIC_Q.map(q=>q.replaceAll("{T}",title.trim())), custom:true});
+  (cfg.custom = cfg.custom||[]).push({id, title, lead:"", hints:GENERIC_Q.map(q=>q.replaceAll("{T}",title)), custom:true});
   cfg.themes.push({id, on:true, minutes:20, mine:[]});
-  saveCfg(); renderSet();
+  $("new-theme").value = "";
+  saveCfg(); renderSet(); prepHooks();
 };
 const testSound = k => { cfg.snd = {on:true, chime:$("set-s-chime").value, warn:$("set-s-warn").value, vol:+$("set-s-vol").value||1}; ctx(); playSound(k==="warn"?cfg.snd.warn:cfg.snd.chime); };
 $("t-chime").onclick = () => testSound("chime");
 $("t-warn").onclick = () => testSound("warn");
 $("b-texts-reset").onclick = () => { if(!confirm("画面の文章を、初期の文章に戻しますか？")) return; Object.keys(TEXT_IDS).forEach(k=>{ $(TEXT_IDS[k]).value = DEF_TEXT[k]; }); };
-$("p120").onclick = () => applyPreset("p120");
 $("p90").onclick = () => applyPreset("p90");
 $("b-set-save").onclick = saveAndTitle;
+$("b-hooks-redo").onclick = () => { collectSet(); cfg.hooks = {}; saveCfg(); renderSet(); prepHooks(); };
 $("b-set-save2").onclick = saveAndTitle;
 
 // ---- AIでテーマを作る ----
@@ -1025,11 +1049,12 @@ function startTheme(i){
   idx = i;
   const t = tpl(plan[i].id);
   extended = false; warned = false; upDone = false; curHint = "";
-  mineQ = (plan[i].mine||[]).slice(); aiQ = shuffle(t.hints.slice());
+  mineQ = (plan[i].mine||[]).slice(); aiQ = shuffle(hintsOf(plan[i].id).slice());
   endAt = Date.now() + plan[i].minutes*60*1000*SCALE;
   stamp(`テーマ${i+1}「${sub(t.title)}」スタート`, {kind:"theme", n:i+1, total:plan.length, title:sub(t.title), lead:sub(t.lead)});
   paintTheme(); show("s-theme");
   clearInterval(tick); tick = setInterval(update, 250); update();
+  const myIdx = i; if(U("auto")) setTimeout(()=>{ if(idx===myIdx && !upDone && !curHint && $("s-theme").classList.contains("on")) showQuestion(); }, 1800);   // 最初の質問は、少し間をおいて自動で出す
 }
 
 // ========= 画面の文章・ボタン・音（設定で書き換え可） =========
@@ -1088,17 +1113,18 @@ function update(){
   }
   if(Date.now()-lastSave > 4000){ lastSave = Date.now(); saveSession(); }   // 4秒ごとに自動保存（電源が切れても、ここから再開できる）
 }
-$("b-help").onclick = () => {
+function showQuestion(){
   // 自作のお題を先に、使い切ったらAIのお題（それも使い切ったら入れ直す）
   let q, src;
   if(mineQ.length){ q = mineQ.shift(); src = "mine"; }
-  else { if(!aiQ.length) aiQ = shuffle(tpl(plan[idx].id).hints.slice()); q = sub(aiQ.pop()); src = tpl(plan[idx].id).aiGen ? "aigen" : "ai"; }
+  else { if(!aiQ.length) aiQ = shuffle(hintsOf(plan[idx].id).slice()); q = sub(aiQ.pop()); src = hasHooks(plan[idx].id) ? "aigen" : "ai"; }
   curHint = q;
   typeText($("t-hint-text"), isRpg() ? q : "💬 " + q);
   $("t-hint").classList.remove("hide");
   stamp(q, {kind:"hint", src, theme:sub(tpl(plan[idx].id).title), title:sub(tpl(plan[idx].id).title)});
   saveSession();
-};
+}
+$("b-help").onclick = showQuestion;
 $("b-gear").onclick = () => { $("tools").classList.toggle("open"); if(!$("tools").classList.contains("open")) $("simbox").classList.add("hide"); };
 $("b-sim").onclick = () => $("simbox").classList.toggle("hide");
 document.querySelectorAll("[data-sim]").forEach(b => b.onclick = () => {
@@ -1153,37 +1179,57 @@ function planJump(i){
   stamp(`テーマ変更：「${sub(ct.title)}」の途中で「${sub(nt.title)}」へ`);
   ctx(); startTheme(idx+1);
 }
-$("b-plan").onclick = () => { renderPlan(); show("s-plan"); $("cu-ai").checked = !!lsGetKey(); $("tools").classList.remove("open"); };
+$("b-plan").onclick = () => { renderPlan(); show("s-plan"); $("tools").classList.remove("open"); };
 function lsGetKey(){ try{ return localStorage.getItem("ob-aikey") || ""; }catch(e){ return ""; } }
 // 新しい大テーマ：自分の質問（優先）→ AIのフック質問（なければ汎用の質問）
 const GENERIC_Q = ["「{T}」で、いちばん印象に残っている出来事は？","「{T}」について、今だから言える話は？","「{T}」で、当時は言えなかった本音は？","「{T}」の中で、いちばん笑った話は？","「{T}」で、いちばん悔しかったことは？","「{T}」で、今も忘れられない一言は？","「{T}」について、他の2人はどう覚えている？","「{T}」の、みんなが知らない裏話は？","「{T}」で、いちばんの失敗談は？","「{T}」があったから今の自分がある、と思う？","「{T}」で、あの頃の自分に言いたいことは？","「{T}」の、一番ドキドキした瞬間は？","「{T}」で、仲間に感謝していることは？","「{T}」の、最高の1日を選ぶなら？","「{T}」を、今の高校生に伝えるなら？","「{T}」で、今だから笑える失敗は？","「{T}」で、いちばん意外だったことは？","「{T}」の、誰も覚えていなさそうな細かい記憶は？"];
-function hookPrompt(title){
+function hookPrompt(id){
+  const t = tpl(id), title = sub(t.title), lead = sub(t.lead||""), mine = ((cfg.themes.find(x=>x.id===id)||{}).mine||[]).join(" / ");
   return `あなたは、静岡の高校サッカーを扱うYouTubeチャンネル「NoFAKE」の企画担当です。
-${cfg.school}のOB（素人）が3人、司会なしで食べ飲みしながら話す対談の、大テーマ「${title}」について、話が止まったときに出す質問を25個考えてください。
+${cfg.school}のOB（素人）が3人、司会なしで食べ飲みしながら話す対談の、大テーマ「${title}」${lead?"（"+lead+"）":""}について、話が止まったときに出す質問を30個考えてください。${mine?"\nすでに先に出す質問があるので、重ならないようにする："+mine:""}
 条件：
-- YouTubeで視聴者が引き込まれる、フックの効いた質問にする（本音・失敗・意外な裏話・「ここだけの話」を引き出す）
+- YouTubeで視聴者が最後まで見たくなる（維持率が取れる）、フックの効いた質問にする。本音・失敗・意外な裏話・「ここだけの話」・誰かの暴露・「もし〜なら」・ランキング・数字で答えさせる質問などを混ぜ、答えが面白くなりそうなものを選ぶ
+- 大テーマから外れない。同じ型の質問を続けない
 - 素人でも答えやすい、具体的な一文にする。1つ20〜45字
 - 実在の人物名や出来事を作らない。当時のエピソードを引き出す質問にする
 出力は次のJSONだけ：{"hints":["","…"]}`;
 }
-async function makeHooks(id, title){
-  const key = lsGetKey(); const msg = $("cu-msg");
-  if(!key){ msg.textContent = "APIキーがないので、用意済みの汎用の質問を使います（設定画面でキーを入れると、AIの質問になります）"; return; }
-  msg.textContent = "AIが質問を考えています…";
+let hookBusy = false;
+function showHookStatus(){
+  const el = $("hook-status"); if(!el) return;
+  const ids = cfg.themes.filter(t=>t.on).map(t=>t.id), done = ids.filter(id=>((cfg.hooks||{})[id]||[]).length>=5).length;
+  el.textContent = lsGetKey() ? `AIの質問：${done} / ${ids.length} テーマ 用意済み（通信できるときに自動で用意します）` : "AIのキーがないので、用意済みの質問（各テーマ約37個）を使います";
+}
+async function makeHooks(id){
+  const key = lsGetKey(); if(!key) return false;
   try{
     const r = await fetch("https://api.anthropic.com/v1/messages", {method:"POST",
       headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body: JSON.stringify({model:"claude-sonnet-5-5", max_tokens:3000, messages:[{role:"user", content: hookPrompt(title)}]})});
+      body: JSON.stringify({model:"claude-sonnet-5-5", max_tokens:3500, messages:[{role:"user", content: hookPrompt(id)}]})});
     const j = await r.json(); if(!r.ok) throw new Error((j.error&&j.error.message)||r.status);
     const txt = (j.content||[]).map(x=>x.text||"").join(""); const a = txt.indexOf("{"), b = txt.lastIndexOf("}");
     const hints = (JSON.parse(txt.slice(a,b+1)).hints||[]).map(String).map(h=>h.trim()).filter(Boolean).slice(0,40);
     if(hints.length<5) throw new Error("質問が少なすぎました");
-    const c = (cfg.custom||[]).find(x=>x.id===id); if(!c) return;
-    c.hints = hints; c.aiGen = true; saveCfg();
-    if(plan[idx] && plan[idx].id===id) aiQ = shuffle(hints.slice());
-    msg.textContent = `AIの質問を${hints.length}個、保存しました`;
-  }catch(e){ msg.textContent = "AIの質問は作れませんでした（" + e.message + "）。用意済みの汎用の質問を使います"; }
+    (cfg.hooks = cfg.hooks||{})[id] = hints; saveCfg();
+    if(plan[idx] && plan[idx].id===id && runPhase==="theme") aiQ = shuffle(hints.slice());
+    return true;
+  }catch(e){ return false; }
 }
+// 使うテーマ（と、追加したテーマ）のうち、まだAIの質問がないものを、通信できるときに順に用意する
+async function prepHooks(extra){
+  if(hookBusy || !pid || !lsGetKey() || !navigator.onLine) { showHookStatus(); return; }
+  hookBusy = true;
+  try{
+    const ids = cfg.themes.filter(t=>t.on).map(t=>t.id).concat(extra||[]);
+    for(const id of ids){
+      if(((cfg.hooks||{})[id]||[]).length>=5 || !tpl(id)) continue;
+      const m = $("cu-msg"); if(m) m.textContent = "AIが質問を考えています…";
+      await makeHooks(id); showHookStatus();
+    }
+    const m = $("cu-msg"); if(m) m.textContent = "";
+  } finally { hookBusy = false; showHookStatus(); }
+}
+window.addEventListener("online", () => prepHooks());
 function customCreate(now){
   const title = $("cu-title").value.trim(); if(!title){ $("cu-msg").textContent = "大テーマを入れてください"; return; }
   const mine = $("cu-mine").value.split("\n").map(x=>x.trim()).filter(Boolean);
@@ -1191,9 +1237,8 @@ function customCreate(now){
   (cfg.custom = cfg.custom||[]).push({id, title, lead:"", hints:GENERIC_Q.map(q=>q.replaceAll("{T}",title)), custom:true});
   cfg.themes.push({id, on:false, minutes:+$("cu-min").value||15, mine});
   saveCfg(); stamp(`カスタムテーマ「${title}」を作成（先に出す質問${mine.length}個）`);
-  const wantAi = $("cu-ai").checked;
   $("cu-title").value = ""; $("cu-mine").value = "";
-  if(wantAi) makeHooks(id, title); else $("cu-msg").textContent = "作りました。用意済みの汎用の質問を使います";
+  if(lsGetKey() && navigator.onLine) prepHooks([id]); else $("cu-msg").textContent = "作りました。AIのキーを設定画面に入れると、AIが質問を自動で用意します（いまは汎用の質問）";
   planAdd(id, now);
 }
 $("cu-now").onclick = () => customCreate(true);
