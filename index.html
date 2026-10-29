@@ -16,6 +16,7 @@ body::after{right:0}
 .logo{width:min(56vw,640px);height:auto;align-self:flex-start}
 .logo-sm{width:min(26vw,300px)}
 .logo-c{align-self:center}
+#t-msg:not(:has(.hint:not(.hide),.banner:not(.hide),#t-timer.big)){display:none}
 .btn.dim{opacity:.55}
 .planbar{display:flex;justify-content:space-between;align-items:center;gap:2vw;position:sticky;top:0;background:var(--bg);z-index:4;padding:1vh 0}
 #s-plan{justify-content:flex-start;gap:1.6vh;padding-bottom:14vh}
@@ -33,7 +34,7 @@ details.more{margin-top:1vh} details.more summary{color:var(--sub);cursor:pointe
 details.card>summary{font-size:clamp(18px,2.4vw,28px);font-weight:900;cursor:pointer;color:var(--accent)}
 #s-rules,#s-toast,#s-intro{align-items:center;text-align:center}
 #s-rules .card,#s-intro .card{text-align:left;align-self:center;max-width:92vw}
-.one-line{white-space:nowrap;font-size:clamp(18px,3.4vw,46px);text-align:center}
+.one-line{white-space:nowrap;font-size:clamp(18px,3.4vw,46px);text-align:center;max-width:94vw}
 #s-rules ol{display:inline-block;text-align:left}
 #s-theme .row{position:sticky;bottom:2vh}
 @media (orientation:landscape){ #s-theme{padding:3vh 5vw;gap:2vh} #s-rules,#s-toast,#s-intro{gap:1.6vh;padding:2.5vh 6vw} #s-rules .logo-c,#s-toast .logo-c{width:min(24vw,280px)} #s-rules li,#s-rules p{font-size:clamp(15px,1.9vw,24px);line-height:1.45} #s-rules .card{padding:1.6vh 3vw} #s-rules .btn{padding:1.6vh 4vw} #s-rules .btn.small{padding:.6vh 1.6vw} }
@@ -449,7 +450,7 @@ function show(id){
   screens.forEach(s=>$(s).classList.toggle("on",s===id));
   $("b-log").classList.toggle("hide", id==="s-set" || id==="s-title");
   const inRun = ["s-rules","s-toast","s-intro","s-theme"].includes(id);
-  if(["s-rules","s-toast","s-intro"].includes(id)) applyTexts();
+  if(["s-rules","s-toast","s-intro"].includes(id)){ applyTexts(); fitOne(); }
   $("b-home").classList.toggle("hide", !inRun);
   $("b-backup").classList.toggle("hide", !inRun);
   $("b-plan").classList.toggle("hide", id!=="s-theme");
@@ -1037,7 +1038,7 @@ const DEF_TEXT = {
   rules:["飲み物は自由です。","先にマイクをつけてください。","カメラが回っています。","何か困ったら、スタッフに声をかけてください。","画面にテーマが出ます。"].join("\n"),
   body:"これから{n}つのテーマに沿って、自由に話してもらいます。テーマが終わると「チーン」と鳴りますので、次のテーマに進んでください。時間の1分前には、予告の音が鳴ります。そうしたら、いいところで区切ってください。",
   lead:"最後に、全員の準備ができたら、ボタンを押してください。",
-  consent:"撮影と動画の公開に同意します", btn:"全員そろいました",
+  consent:"撮影と動画の公開に同意します", btn:"スタート",
   toast:"まずは、飲み物を注文してください。注文したら、乾杯をしてください。", toastbtn:"乾杯しました",
   introtitle:"まずは、自己紹介をお願いします。", introhead:"これだけは言ってください",
   intro:["名前","年齢","{school}の何期生か","背番号（なければ「なし」でOK）","当時のポジション"].join("\n"),
@@ -1049,6 +1050,16 @@ const T = k => { const v = cfg.texts && cfg.texts[k]; return String((v && v.trim
 const U = k => !(cfg.ui && cfg.ui[k] === false);
 const SND = () => Object.assign({on:true, chime:"chime", warn:"warn", vol:1}, cfg.snd||{});
 function fillList(el, text){ el.innerHTML = ""; text.split("\n").map(x=>x.trim()).filter(Boolean).forEach(x=>{ const li=document.createElement("li"); li.textContent=x; el.appendChild(li); }); }
+function fitOne(){
+  document.querySelectorAll(".one-line").forEach(el=>{
+    if(!el.offsetParent) return;
+    el.style.fontSize = ""; el.style.whiteSpace = "nowrap";
+    let fs = parseFloat(getComputedStyle(el).fontSize);
+    while(el.scrollWidth > innerWidth*0.92 && fs > 22){ fs -= 2; el.style.fontSize = fs + "px"; }
+    if(el.scrollWidth > innerWidth*0.92) el.style.whiteSpace = "normal";   // それでも収まらなければ折り返す
+  });
+}
+window.addEventListener("resize", fitOne);
 function applyTexts(){
   $("rules-h").textContent = T("welcome"); fillList($("rules-list"), T("rules"));
   $("rules-body").textContent = T("body"); $("rules-lead").textContent = T("lead");
