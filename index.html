@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OB対談">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>OB対談 進行</title>
+<style>
+:root{--bg:#0b0b0c;--fg:#f4f1ea;--sub:#b8b5ae;--accent:#ff1c12;--ok:#f4f1ea;--warn:#ff1c12;--card:#18181b}
+body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:1.2vw;background:var(--accent);pointer-events:none}
+body::before{left:0}
+body::after{right:0}
+.logo{width:min(56vw,640px);height:auto;align-self:flex-start}
+.logo-sm{width:min(26vw,300px)}
+.screen{background:radial-gradient(ellipse at 50% 30%,#1c1c20 0%,#0b0b0c 70%)}
+.pill{align-self:flex-start;background:var(--accent);color:#0b0b0c;padding:.15em .9em;font-size:clamp(20px,2.6vw,34px)}
+.col{display:flex;flex-direction:column;gap:2vh;align-items:flex-start}
+.col .btn{align-self:flex-start}
+.set .card h2{margin-bottom:1vh}
+.cand{background:#1f1f23;border-left:8px solid var(--accent);padding:2vh 2vw;margin-top:1.2vh}
+.cand p{font-size:clamp(14px,1.8vw,22px);line-height:1.6}
+.slash{width:min(32vw,420px);height:.9vh;min-height:8px;background:var(--accent);transform:skewX(-35deg);align-self:flex-start}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif;user-select:none;-webkit-user-select:none}
+.screen{display:none;min-height:100%;padding:6vh 6vw;flex-direction:column;justify-content:center;gap:3vh}
+.screen.on{display:flex}
+h1{font-size:clamp(28px,5vw,64px);font-weight:900;margin:0;letter-spacing:.04em}
+h2{font-size:clamp(20px,3vw,36px);font-weight:900;margin:0;color:var(--accent)}
+p,li{font-size:clamp(18px,2.6vw,32px);line-height:1.7;margin:0}
+ul,ol{margin:0;padding-left:1.4em}
+.card{background:var(--card);border-left:8px solid var(--accent);padding:3vh 3vw}
+.btn{appearance:none;border:0;background:var(--accent);color:#0b0b0c;font-size:clamp(22px,3.2vw,40px);font-weight:900;padding:2.4vh 4vw;border-radius:999px;align-self:center;cursor:pointer}
+.btn:disabled{background:#3a3a40;color:#7c7c84}
+.btn.ghost{background:transparent;color:var(--sub);border:2px solid #3a3a40;font-size:clamp(16px,2vw,24px);font-weight:500;padding:1.4vh 2.4vw}
+.btn.small{font-size:clamp(14px,1.6vw,20px);padding:1vh 1.6vw}
+.row{display:flex;gap:2vw;justify-content:center;flex-wrap:wrap}
+.chk{display:flex;gap:1.2vw;align-items:center;font-size:clamp(18px,2.4vw,30px)}
+.chk input{width:2em;height:2em}
+.theme-title{font-size:clamp(40px,7vw,110px);font-weight:900;line-height:1.25;margin:0}
+.lead{color:var(--sub)}
+.dots{display:flex;gap:1vw;justify-content:flex-start}
+.dot{width:3vw;max-width:28px;height:3vw;max-height:28px;border-radius:50%;background:#2a2a30}
+.dot.done{background:var(--ok)}.dot.now{background:var(--accent)}
+.banner{padding:2vh 3vw;font-size:clamp(20px,3vw,38px);text-align:center;font-weight:700}
+.hide{display:none!important}
+.hint{background:#1f1f23;border-left:8px solid var(--accent);padding:2.4vh 3vw}
+.hint p{font-size:clamp(22px,3.4vw,44px);font-weight:600}
+.log{font-size:clamp(14px,1.8vw,22px);color:var(--sub);white-space:pre-wrap;font-variant-numeric:tabular-nums}
+/* タイマー：既定は端にうっすら */
+#t-timer{font-variant-numeric:tabular-nums;font-weight:600;position:fixed;color:var(--fg)}
+#t-timer.br{right:2.2vw;bottom:2vh;font-size:clamp(16px,1.8vw,24px);opacity:.28}
+#t-timer.tr{right:2.2vw;top:2vh;font-size:clamp(16px,1.8vw,24px);opacity:.28}
+#t-timer.big{position:static;font-size:clamp(48px,9vw,140px);text-align:center;opacity:1;font-weight:700}
+#t-timer.off{display:none}
+#t-timer.warn{color:var(--warn)}
+#t-timer.br.warn,#t-timer.tr.warn{opacity:.5}
+/* スタッフ設定 */
+.set label{display:flex;gap:1vw;align-items:center;font-size:clamp(16px,2vw,26px);margin:.6vh 0}
+.set input[type=text],.set select,.set input[type=number]{font-size:clamp(16px,2vw,26px);padding:.8vh 1vw;border-radius:10px;border:1px solid #3a3a40;background:#121214;color:var(--fg)}
+.set input[type=number]{width:5em}
+.set table{width:100%;border-collapse:collapse}
+.set td{padding:.5vh .6vw;font-size:clamp(15px,1.9vw,24px)}
+.set textarea{width:100%;font-size:clamp(14px,1.8vw,22px);padding:.8vh 1vw;border-radius:10px;border:1px solid #3a3a40;background:#121214;color:var(--fg);font-family:inherit}
+.hist{background:var(--card);border-radius:16px;padding:2vh 2vw;max-height:52vh;overflow:auto;font-size:clamp(14px,1.9vw,24px);line-height:1.8;font-variant-numeric:tabular-nums}
+.hist .th{color:var(--accent);font-weight:700;margin-top:.8vh}
+.hist .sm{color:var(--sub)}
+#s-end .row{margin-top:1vh}
+.corner-link{position:fixed;left:2vw;bottom:1.6vh;opacity:.3}
+.top-left{position:fixed;top:1.2vh;left:1.5vw;opacity:.3}
+.top-left2{position:fixed;top:1.2vh;left:9vw;opacity:.3}
+.top-left3{position:fixed;top:1.2vh;left:20vw;opacity:.3}
+.topbar{position:fixed;top:1.2vh;left:1.5vw;display:flex;gap:1vw;opacity:.35;z-index:5}
+.proj{background:var(--card);border-left:8px solid #3a3a40;padding:2vh 2vw;margin-bottom:1.6vh;display:flex;flex-direction:column;gap:1vh}
+.proj.run{border-left-color:var(--accent)}
+.proj h3{margin:0;font-size:clamp(22px,3vw,40px);font-weight:900}
+.proj p{font-size:clamp(14px,1.9vw,24px);line-height:1.5}
+.proj .st{color:var(--accent);font-weight:700}
+.proj .row{justify-content:flex-start}
+/* ===== ゲーム風（RPG）。タイトル・ルール・自己紹介・本編・テーマ変更の画面だけ。設定画面などは今のまま ===== */
+@font-face{font-family:"DotGothic16";src:url("DotGothic16-Regular.ttf")}
+.rpg .rpgs{--blue:#0a1a8c;--yellow:#ffe066;font-family:"DotGothic16","Hiragino Sans",sans-serif;background:#000}
+.rpg .rpgs h1,.rpg .rpgs h2,.rpg .rpgs h3,.rpg .rpgs p,.rpg .rpgs li,.rpg .rpgs .btn,.rpg .rpgs label,.rpg .rpgs #t-timer{font-family:"DotGothic16","Hiragino Sans",sans-serif;font-weight:400;letter-spacing:.06em}
+.rpg .rpgs .card,.rpg .rpgs .proj,.rpg .rpgs .win,.rpg .rpgs .cand,.rpg .rpgs .hint,.rpg .rpgs .banner{background:var(--blue);border:4px solid #f4f1ea;border-radius:10px;box-shadow:inset 0 0 0 3px var(--blue),inset 0 0 0 5px #5d6bd6;color:#fff}
+.rpg .rpgs .proj.run{border-color:var(--yellow)}
+.rpg .rpgs .win{padding:2.4vh 2.4vw;display:flex;flex-direction:column;gap:1.4vh}
+.rpg .rpgs .lead,.rpg .rpgs .proj p,.rpg .rpgs .cand p{color:#dfe3ff}
+.rpg .rpgs .proj .st{color:var(--yellow)}
+.rpg .rpgs h2{color:var(--yellow)}
+.rpg .rpgs .btn{background:var(--blue);color:#fff;border:4px solid #f4f1ea;border-radius:10px;font-size:clamp(20px,2.8vw,34px);padding:1.2vh 2.6vw;text-align:left;box-shadow:inset 0 0 0 3px var(--blue),inset 0 0 0 5px #5d6bd6}
+.rpg .rpgs .btn::before{content:"▶ ";color:var(--yellow)}
+.rpg .rpgs .btn.ghost{color:#dfe3ff;border-color:#9aa2e6;font-size:clamp(16px,2.2vw,28px)}
+.rpg .rpgs .btn.small{font-size:clamp(14px,1.9vw,24px)}
+.rpg .rpgs .btn:disabled{background:#222;color:#777;border-color:#555;box-shadow:none}
+.rpg .rpgs .btn:active{background:#2a3ab8}
+.rpg .rpgs .pill{background:transparent;color:var(--yellow);padding:0;font-size:clamp(20px,2.6vw,34px)}
+.rpg .rpgs .pill::before{content:"◆ "}
+.rpg .rpgs .slash{display:none}
+.rpg .rpgs .theme-title{font-weight:400;font-size:clamp(34px,6vw,92px);color:#fff;text-shadow:4px 4px 0 #000;line-height:1.3}
+.rpg .rpgs .dot{border-radius:0;background:#2b3a9a;border:2px solid #fff}
+.rpg .rpgs .dot.done{background:#fff}
+.rpg .rpgs .dot.now{background:var(--yellow)}
+.rpg .rpgs #t-timer{color:#fff}
+.rpg .rpgs #t-warn,.rpg .rpgs #t-up{background:var(--blue)!important;color:var(--yellow)!important;text-align:left}
+.rpg .rpgs .typed.done::after{content:" ▼";color:var(--yellow);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.rpg #s-title h1{font-size:clamp(34px,6vw,84px);text-shadow:5px 5px 0 #000}
+body.rpg::before,body.rpg::after{display:none}
+</style>
+</head>
+<body>
+
+<!-- 0 タイトル（プロジェクトの一覧） -->
+<section class="screen rpgs on" id="s-title">
+  <img class="logo" src="logo.png" alt="NoFAKE">
+  <div class="win">
+  <h1>OB対談 進行</h1>
+  <p class="lead" style="font-size:clamp(14px,1.9vw,24px)">プロジェクトを選んで、撮影を始める。途中のデータは自動で保存されます（電源が切れても、続きからできます）。</p>
+  </div>
+  <div id="proj-list"></div>
+  <div class="row" style="justify-content:flex-start">
+    <button class="btn small" id="b-newproj">＋ 新しいプロジェクト</button>
+    <button class="btn ghost small" id="b-import">別の端末から読み込む</button>
+  </div>
+  <div class="card hide" id="imp-box">
+    <h2>別の端末から読み込む</h2>
+    <p class="lead" style="font-size:clamp(14px,1.8vw,22px)">元の端末で「書き出し」したファイルを選ぶか、「コード」を貼り付けて、読み込みます。途中のデータ（残り時間・お題の順番）も引き継がれます。</p>
+    <input type="file" id="imp-file" accept=".json,application/json" style="font-size:clamp(14px,1.8vw,22px);color:var(--fg)">
+    <textarea id="imp-text" rows="3" placeholder="コードを貼り付け" style="width:100%;font-size:clamp(14px,1.8vw,22px);padding:.8vh 1vw;background:#121214;color:var(--fg);border:1px solid #3a3a40;font-family:inherit"></textarea>
+    <div class="row" style="justify-content:flex-start"><button class="btn small" id="imp-go">読み込む</button></div>
+    <p class="lead" id="imp-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
+  </div>
+</section>
+
+<!-- 1 ルール -->
+<section class="screen rpgs" id="s-rules">
+  <img class="logo" src="logo.png" alt="NoFAKE">
+  <h1>ようこそ。ここはOBだけの部屋です。</h1>
+  <div class="card">
+    <ol>
+      <li>飲み食いは自由です。好きなように話してください。</li>
+      <li>先にマイクを付けてください（名前のテープが貼ってある、ご自分のマイクです）。</li>
+      <li>カメラは回っています。スタッフは同じ部屋にいますが、映りません。困ったら声をかけてください。</li>
+      <li>画面にテーマが出ます。時間が来たら、チーンと鳴ります。</li>
+      <li>鳴る1分前に、予告の音が出ます。いいところで区切ってください。</li>
+      <li>全員の準備ができたら、下のボタンを押してください。</li>
+    </ol>
+  </div>
+  <label class="chk"><input type="checkbox" id="consent"> 撮影と動画の公開に同意します</label>
+  <button class="btn" id="b-start" disabled>全員そろいました</button>
+  <button class="btn ghost small" id="b-rules-back">← タイトルに戻る</button>
+</section>
+
+<!-- 1.5 スタッフ設定（撮影前だけ） -->
+<section class="screen set" id="s-set">
+  <h1>設定</h1>
+  <button class="btn small" id="b-set-save2">保存してタイトルに戻る</button>
+  <div class="card">
+    <label>プロジェクト名 <input type="text" id="set-name" style="flex:1"></label>
+    <label>学校名 <input type="text" id="set-school" style="flex:1"></label>
+    <div class="row" style="justify-content:flex-start;margin:1vh 0">
+      <button class="btn ghost small" id="p120">2時間の型</button>
+      <button class="btn ghost small" id="p90">90分の型</button>
+    </div>
+    <table id="set-themes"></table>
+    <p class="lead" style="font-size:clamp(13px,1.6vw,20px)">テーマの名前とリードは、そのまま書き換えられます（{school} は学校名に置き換わります）。</p>
+    <button class="btn ghost small" id="b-addtheme">＋ テーマを自分で作る</button>
+    <p class="lead" id="set-total"></p>
+  </div>
+  <div class="card">
+    <label>タイマー表示
+      <select id="set-timer">
+        <option value="br">右下にうっすら</option>
+        <option value="tr">右上にうっすら</option>
+        <option value="big">大きく表示</option>
+        <option value="off">表示しない（音だけ）</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="set-warnmsg"> 1分前に画面でもお知らせする（音は常に鳴る）</label>
+    <label>画面の見た目
+      <select id="set-look"><option value="rpg">ゲーム風（RPG）</option><option value="brand">NoFAKE風（黒・赤・白）</option></select>
+    </label>
+    <label>書き出し画像の大きさ
+      <select id="set-img"><option value="2">4K（高画質）</option><option value="1">フルHD</option></select>
+    </label>
+  </div>
+  <div class="card">
+    <h2>AIでテーマを作る</h2>
+    <p class="lead" style="font-size:clamp(14px,1.8vw,22px)">学校名とメモをもとに、話しやすく、見たくなるテーマ案を作ります。「伸びそうか」の判断は、AIの一般的な知識によるものです。過去の動画の再生数などを下のメモに貼ると、それを踏まえた案になります。</p>
+    <label style="align-items:flex-start">メモ（任意）<textarea id="ai-memo" rows="3" placeholder="例：監督の話を多めに／伸びた動画のタイトルと再生数を貼る"></textarea></label>
+    <div class="row" style="justify-content:flex-start;margin:1vh 0">
+      <button class="btn small" id="ai-run">AIに作ってもらう（通信が必要）</button>
+      <button class="btn ghost small" id="ai-copy">依頼文をコピー（Claudeに頼む）</button>
+    </div>
+    <label>APIキー（この端末にだけ保存）<input type="password" id="ai-key" style="flex:1" autocomplete="off"></label>
+    <label style="align-items:flex-start">AIの案を貼り付ける<textarea id="ai-paste" rows="4" placeholder="Claudeが作った案（JSON）を貼り付けて、下のボタンを押す"></textarea></label>
+    <button class="btn ghost small" id="ai-import" style="align-self:flex-start">貼り付けた案を読み込む</button>
+    <p class="lead" id="ai-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
+    <div id="ai-list"></div>
+  </div>
+  <button class="btn" id="b-set-save">保存してタイトルに戻る</button>
+</section>
+
+<!-- 2 自己紹介 -->
+<section class="screen rpgs" id="s-intro">
+  <h1>まず、順番に自己紹介をお願いします</h1>
+  <div class="card">
+    <h2>これだけは言ってください</h2>
+    <ul>
+      <li>名前</li>
+      <li>年齢</li>
+      <li id="intro-kiki"></li>
+      <li>背番号（なければ「なし」でOK）</li>
+      <li>当時のポジション</li>
+    </ul>
+  </div>
+  <p class="lead">全員の自己紹介が終わったら、下のボタンを押してください。</p>
+  <button class="btn" id="b-intro-done">全員の自己紹介が終わりました</button>
+</section>
+
+<!-- 3 テーマ -->
+<section class="screen rpgs" id="s-theme">
+  <img class="logo logo-sm" src="logo.png" alt="NoFAKE">
+  <div class="win" id="t-main">
+  <div class="dots" id="dots"></div>
+  <p class="lead" id="t-count"></p>
+  <h2 class="pill">テーマ</h2>
+  <p class="theme-title" id="t-title"></p>
+  <div class="slash"></div>
+  </div>
+  <div class="win" id="t-msg">
+  <p class="lead typed" id="t-lead"></p>
+  <div id="t-timer" class="br">--:--</div>
+  <div class="banner hide" id="t-warn" style="background:var(--warn);color:#fff">あと1分です。いいところで話をまとめてください</div>
+  <div class="banner hide" id="t-up" style="background:#f4f1ea;color:#0b0b0c">時間です。話を区切ってください</div>
+  <div class="hint hide" id="t-hint"><p id="t-hint-text" class="typed"></p></div>
+  </div>
+  <div class="row">
+    <button class="btn ghost" id="b-help">話が止まったら</button>
+    <button class="btn ghost" id="b-extend">あと5分（1回だけ）</button>
+    <button class="btn ghost" id="b-plan">テーマを変える</button>
+    <button class="btn hide" id="b-next">次のテーマを開く</button>
+  </div>
+</section>
+
+<!-- 3.5 テーマを変える（収録中） -->
+<section class="screen rpgs" id="s-plan">
+  <h1>テーマを変える</h1>
+  <p class="lead" style="font-size:clamp(14px,1.9vw,24px)">今のテーマはそのままで、次に進むテーマを選び直せます。「今すぐ始める」を押すと、今のテーマを終えて、そのテーマに移ります。</p>
+  <div id="plan-list"></div>
+  <div class="card"><h2>ほかのテーマ</h2><div id="plan-pool"></div></div>
+  <button class="btn" id="b-plan-close">もどる</button>
+</section>
+
+<!-- 4 エンディング -->
+<section class="screen" id="s-end">
+  <img class="logo" src="logo.png" alt="NoFAKE">
+  <h1 id="end-h">話したテーマの記録</h1>
+  <p id="end-p" class="lead hide">最後に、ひとりずつ一言ずつお願いします。終わったら、マイクを外してお帰りください。</p>
+  <div class="hist" id="hist"></div>
+  <div class="row">
+    <button class="btn small" id="b-save">画像と記録をまとめて保存（ZIP）</button>
+    <button class="btn ghost small" id="b-back">戻る</button>
+    <button class="btn ghost small" id="b-end-home">タイトルへ</button>
+  </div>
+  <p class="lead" id="save-msg" style="font-size:clamp(14px,1.8vw,22px)"></p>
+</section>
+
+<div class="topbar">
+<button class="btn ghost small" id="b-log">記録</button>
+<button class="btn ghost small" id="b-home">タイトルへ</button>
+<button class="btn ghost small" id="b-backup">バックアップ</button>
+</div>
+
+<script>
+// ============================================================
+//  大きなテーマのテンプレ（どの高校のOB対談でも使える）
+//  {school} は設定の学校名に置き換わる。お題（hints）は事前に作った一覧で、
+//  「話が止まったら」を押すと、重複せずに1つずつ出る。
+// ============================================================
+const TEMPLATE = [
+  {id:"enter", title:"入学の日・あの頃の自分", lead:"{school}を選んだ理由／初めて練習に行った日／同期の第一印象",
+   hints:[
+    "{school}を選んだ決め手は何でしたか？","入学前のイメージと、入ってからの違いは？","初めて練習に参加した日、いちばん驚いたことは？",
+    "同期で「この人にはかなわない」と思った人は？","入学した頃の自分に、今なら何と言いたい？","寮や通学など、毎日の生活で一番大変だったことは？",
+    "先輩の第一印象と、実際はどうだった？","入部したとき同期は何人いた？ 最後まで残ったのは？","親に「やめたい」と言ったことはある？",
+    "一番最初に怒られたことは？","当時の自分のあだ名は？","入学したての頃、一番好きだった練習メニューは？"]},
+  {id:"coach", title:"あの監督・あの練習", lead:"怖かった話／きつかった練習／いま思うこと",
+   hints:[
+    "一番きつかった練習は？","監督に言われて、今も覚えている言葉は？","「あれは理不尽だった」と今でも思うことは？",
+    "当時は嫌いだった練習が、今になって役に立ったことは？","雨の日・冬の日の練習の思い出は？","監督が怒ったとき、みんなはどうしていた？",
+    "今の時代ならアウトだと思う練習は？","紅白戦や練習試合で、一番火花が散った相手は？","監督に褒められた、たった一度の思い出は？",
+    "当時の指導に、今なら感謝している？","休みの日は何をしていた？","「この練習だけは二度とやりたくない」はどれ？"]},
+  {id:"match", title:"忘れられない試合", lead:"勝った日／負けた日／ライバル校",
+   hints:[
+    "一番悔しかった試合は？","試合前の控え室は、どんな空気だった？","一番うまくいった試合、あの日の自分を覚えている？",
+    "当時のライバル校はどこ？ その学校への思いは？","選手権や総体の、あの瞬間を覚えていますか？","試合で一番緊張した場面は？",
+    "ベンチや観客席から見た試合の思い出は？","試合後、ロッカーで誰が何を言っていた？","今でも夢に出る、あのプレーは？",
+    "応援してくれた人たちの記憶は？","試合のあとの食事・打ち上げの思い出は？","負けた試合を、いま誰かに話すとしたら？"]},
+  {id:"mates", title:"仲間・ライバル", lead:"同期のこと／いま連絡している人／あいつがいたから",
+   hints:[
+    "同期の中で、一番変わった人は？","「今だから言える」同期の秘密は？","今も連絡を取っている仲間は誰？",
+    "仲間とケンカしたことはある？ どう仲直りした？","一番尊敬していた人は誰で、なぜ？","チームの中での、自分の役割は？",
+    "卒業してから再会して、驚いた仲間は？","他校の選手で、今でも覚えている人は？","「あいつがいたから頑張れた」と思う人は？",
+    "もう一度、同じメンバーで試合ができるなら？","当時のチームを一言で言うと？","みんなが知らない、あの人の意外な一面は？"]},
+  {id:"secret", title:"ここだけの話", lead:"時効の失敗談／寮や遠征のやらかし／黒歴史",
+   hints:[
+    "今だから言える、バレなかった話は？","寮や遠征のやらかしで、一番ひどかったのは？","先輩に隠れてやっていたことは？",
+    "監督には絶対に言えなかったことは？","学校生活（授業・先生）の思い出は？","恋愛や、モテた話はありましたか？",
+    "一番お金がなかった時期の話は？","当時の「黒歴史」を一つ挙げるなら？","「あれは危なかった」という出来事は？",
+    "食べ物の思い出（寮飯・買い食い）は？","当時の自分について、秘密を一つ暴露するなら？","時効だから言うけど、という話は？"]},
+  {id:"next", title:"いまの後輩へ・いまの{school}", lead:"母校への思い／後輩へのひとこと／もう一度高校生なら",
+   hints:[
+    "いまの{school}を見て、どう思いますか？","今の後輩に、ひとこと言うなら？","もう一度高校生に戻れたら、何を変えたい？",
+    "高校サッカーで学んだことが、今の仕事や生活で役立っている場面は？","「{school}サッカー部だった」と言うと、どう言われる？","これから{school}に入る子に、何を伝えたい？",
+    "今のサッカーと、自分たちの頃との一番の違いは？","今の{school}の試合を見て、悔しい・うれしいと思った瞬間は？","{school}のサッカーの「らしさ」とは何だと思いますか？",
+    "母校のために、OBとして今できることは？","次に集まるなら、誰を呼びたい？","今日話してみて、いちばん笑ったのは？"]},
+];
+// 型（どのテーマを何分で使うか）
+const PRESETS = {
+  p120: {enter:25, coach:25, match:25, secret:25, next:20},   // 合計120分
+  p90:  {enter:25, match:25, secret:20, next:20},             // 合計90分
+};
+const WARN_SEC = 60;
+const EXTEND_SEC = 5*60;
+const FAST = new URLSearchParams(location.search).has("fast");   // ?fast=1 で時間が10分の1（テスト用）
+const SCALE = FAST ? 0.1 : 1;
+const warnSec = FAST ? 3 : WARN_SEC;
+
+// ========= プロジェクトと保存 =========
+// プロジェクト＝1回の収録の単位（例：静岡学園 オープニング）。設定・記録・途中経過を、プロジェクトごとに端末へ自動保存する
+const defaults = () => ({school:"静岡学園", timer:"br", warnmsg:false, imgScale:2, custom:[], over:{},
+  themes: TEMPLATE.map(t=>({id:t.id, on: t.id in PRESETS.p120, minutes: PRESETS.p120[t.id]||20, mine:[]}))});
+let cfg = defaults();
+let pid = null;                      // 今のプロジェクトのid
+let runPhase = "none";               // 収録の進み具合: none / rules / intro / theme / end
+let projects = [];                   // [{id,name,updated}]
+const lsGet = (k,d) => { try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } };
+const lsSet = (k,v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+const lsDel = k => { try{ localStorage.removeItem(k); }catch(e){} };
+const newId = () => "p" + Date.now().toString(36) + Math.floor(Math.random()*1296).toString(36);
+function saveProjects(){ lsSet("ob-projects", projects); }
+function touch(){ const p = projects.find(x=>x.id===pid); if(p){ p.updated = Date.now(); saveProjects(); } }
+function saveCfg(){ if(pid) lsSet("ob-config:"+pid, cfg); touch(); }
+const $ = id => document.getElementById(id);
+const sub = s => s.replaceAll("{school}", cfg.school);
+const ALL = () => TEMPLATE.concat(cfg.custom||[]);      // 型のテーマ＋AIで作って追加したテーマ
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+// テーマの本体。名前・リードは、設定で直した内容（over）を優先する
+const tpl = id => {
+  const base = ALL().find(t=>t.id===id); if(!base) return base;
+  const o = (cfg.over||{})[id]; if(!o) return base;
+  return Object.assign({}, base, {title:o.title||base.title, lead:(o.lead!==undefined?o.lead:base.lead)});
+};
+const screens = ["s-title","s-rules","s-set","s-intro","s-theme","s-plan","s-end"];
+const PHASE_OF = {"s-rules":"rules","s-intro":"intro","s-theme":"theme"};
+function show(id){
+  screens.forEach(s=>$(s).classList.toggle("on",s===id));
+  $("b-log").classList.toggle("hide", id==="s-set" || id==="s-title");
+  const inRun = ["s-rules","s-intro","s-theme"].includes(id);
+  $("b-home").classList.toggle("hide", !inRun);
+  $("b-backup").classList.toggle("hide", !inRun);
+  if(PHASE_OF[id]){ runPhase = PHASE_OF[id]; saveSession(); }
+  if(id==="s-title") renderTitle();
+  window.scrollTo(0,0);
+}
+function applyLook(){ document.body.classList.toggle("rpg", lsGet("ob-look","rpg") !== "brand"); }
+const isRpg = () => document.body.classList.contains("rpg");
+// 文字が一文字ずつ出る（ゲーム風のときだけ。終わると ▼ が点滅）
+function typeText(el, text, speed){
+  const tok = (el._tok = (el._tok||0) + 1);
+  if(!isRpg()){ el.textContent = text; el.classList.remove("done"); return; }
+  el.classList.remove("done"); el.textContent = "";
+  let i = 0;
+  const tm = setInterval(()=>{
+    if(el._tok !== tok){ clearInterval(tm); return; }
+    i++; el.textContent = text.slice(0,i);
+    if(i >= text.length){ clearInterval(tm); el.classList.add("done"); }
+  }, speed || 45);
+}
+const fmtMs = ms => { const s=Math.max(0,Math.round(ms/1000)); return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`; };
+
+// ---- 途中経過の自動保存と再開 ----
+function sessionState(){
+  if(runPhase==="none") return null;
+  const st = {phase:runPhase, savedAt:Date.now(), plan};
+  if(runPhase==="theme"){
+    Object.assign(st, {idx, left:Math.max(0,endAt-Date.now()), extended, warned, upDone, mineQ, aiQ, hint:curHint});
+  }
+  return st;
+}
+function saveSession(){ if(!pid) return; const st = sessionState(); if(st) lsSet("ob-session:"+pid, st); }
+function clearSession(){ if(pid) lsDel("ob-session:"+pid); runPhase = "none"; }
+function resumeSession(){
+  const st = lsGet("ob-session:"+pid, null); if(!st) return false;
+  plan = st.plan || [];
+  if(st.phase==="rules"){ show("s-rules"); return true; }
+  if(st.phase==="intro"){ $("intro-kiki").textContent = `${cfg.school}の何期生か`; show("s-intro"); return true; }
+  if(st.phase==="theme"){
+    if(!plan.length || plan.some(t=>!tpl(t.id))){ alert("テーマの情報が見つかりません。最初からやり直してください"); clearSession(); return false; }
+    idx = st.idx; extended = !!st.extended; warned = !!st.warned; upDone = !!st.upDone;
+    mineQ = st.mineQ || []; aiQ = st.aiQ || []; curHint = st.hint || "";
+    endAt = Date.now() + (st.left||0);
+    ctx(); keepAwake();
+    paintTheme(); show("s-theme");
+    stamp(`再開（${upDone ? "時間切れの状態から" : "残り " + fmtMs(st.left||0) + " から"}）`);
+    clearInterval(tick); if(!upDone){ tick = setInterval(update, 250); update(); }
+    return true;
+  }
+  if(st.phase==="end"){ runPhase = "end"; openHist(true); return true; }
+  return false;
+}
+// タイトルへ戻る（途中経過は自動保存済み。中断の印を残す）
+function goTitle(interrupt){
+  try{ clearInterval(tick); }catch(e){}
+  if(interrupt){ stamp("タイトルに戻った（中断）"); saveSession(); }
+  show("s-title");
+}
+document.addEventListener("visibilitychange", () => { if(document.hidden) saveSession(); });
+window.addEventListener("pagehide", saveSession);
+
+// ---- タイトル：プロジェクトの一覧 ----
+function statusOf(id){
+  const st = lsGet("ob-session:"+id, null), ev = lsGet("ob-events:"+id, []);
+  if(!st) return {txt: ev.length ? `記録${ev.length}件` : "未開始", run:false};
+  if(st.phase==="end") return {txt:`終了（記録${ev.length}件）`, run:false};
+  if(st.phase==="theme") return {txt:`本編の途中：テーマ${st.idx+1} / ${(st.plan||[]).length}（${st.upDone?"時間切れの状態":"残り "+fmtMs(st.left||0)}）`, run:true};
+  return {txt:"準備の途中", run:true};
+}
+function mkBtn(label, cls, fn){ const b=document.createElement("button"); b.className="btn "+cls; b.textContent=label; b.onclick=fn; return b; }
+function renderTitle(){
+  const box = $("proj-list"); box.innerHTML = "";
+  [...projects].sort((a,b)=>b.updated-a.updated).forEach(pr=>{
+    const c = Object.assign(defaults(), lsGet("ob-config:"+pr.id, {}));
+    const plan0 = c.themes.filter(t=>t.on && ALLOF(c).some(x=>x.id===t.id));
+    const total = plan0.reduce((a,t)=>a+t.minutes,0);
+    const st = statusOf(pr.id);
+    const d = document.createElement("div"); d.className = "proj" + (st.run ? " run" : "");
+    const h = document.createElement("h3"); h.textContent = pr.name;
+    const p1 = document.createElement("p"); p1.className = "st"; p1.textContent = st.txt + (lsGet("ob-session:"+pr.id,null) ? `　最終保存 ${hhmmss(new Date(lsGet("ob-session:"+pr.id,{}).savedAt).toISOString())}` : "");
+    const p2 = document.createElement("p"); p2.className = "lead"; p2.textContent = `${c.school}｜テーマ${plan0.length}つ・合計${total}分`;
+    const r1 = document.createElement("div"); r1.className = "row";
+    if(st.run) r1.appendChild(mkBtn("続きから", "small", () => { openProject(pr.id); if(!resumeSession()) renderTitle(); }));
+    r1.appendChild(mkBtn(st.run ? "最初からやり直す" : "撮影を始める", st.run ? "ghost small" : "small", () => startRun(pr.id)));
+    r1.appendChild(mkBtn("設定", "ghost small", () => { openProject(pr.id); renderSet(); show("s-set"); }));
+    r1.appendChild(mkBtn("記録・ZIP", "ghost small", () => { openProject(pr.id); openHist(false); }));
+    const r2 = document.createElement("div"); r2.className = "row";
+    r2.appendChild(mkBtn("書き出し（別の端末へ）", "ghost small", () => exportProject(pr.id, false)));
+    r2.appendChild(mkBtn("コードをコピー", "ghost small", () => exportProject(pr.id, true)));
+    r2.appendChild(mkBtn("複製", "ghost small", () => dupProject(pr.id)));
+    r2.appendChild(mkBtn("削除", "ghost small", () => delProject(pr.id)));
+    d.append(h,p1,p2,r1,r2); box.appendChild(d);
+  });
+}
+const ALLOF = c => TEMPLATE.concat(c.custom||[]);
+function openProject(id){
+  pid = id; lsSet("ob-cur", id);
+  cfg = Object.assign(defaults(), lsGet("ob-config:"+id, {}));
+  events = lsGet("ob-events:"+id, []);
+  runPhase = (lsGet("ob-session:"+id, null) || {}).phase || "none";
+}
+function createProject(name, school, srcCfg){
+  const id = newId(); const c = srcCfg ? JSON.parse(JSON.stringify(srcCfg)) : defaults();
+  if(school) c.school = school;
+  lsSet("ob-config:"+id, c); lsSet("ob-events:"+id, []);
+  projects.unshift({id, name, updated:Date.now()}); saveProjects(); return id;
+}
+function startRun(id){
+  openProject(id);
+  const st = lsGet("ob-session:"+id, null);
+  if(st && st.phase!=="end" && !confirm("途中のデータがあります。最初からやり直すと、途中の状態は消えます（これまでの記録は、別に残ります）。\n最初からやり直しますか？")) return;
+  if(events.length) lsSet("ob-events-prev:"+id, events);
+  events = []; lsSet("ob-events:"+id, events); clearSession();
+  show("s-rules");
+}
+function dupProject(id){
+  const pr = projects.find(p=>p.id===id); if(!pr) return;
+  const name = prompt("複製したプロジェクトの名前", pr.name + "（コピー）"); if(!name) return;
+  createProject(name, null, lsGet("ob-config:"+id, defaults())); renderTitle();
+}
+function delProject(id){
+  const pr = projects.find(p=>p.id===id); if(!pr) return;
+  if(!confirm(`「${pr.name}」を削除しますか？\n設定・記録・途中のデータが、すべて消えます。`)) return;
+  ["ob-config:","ob-events:","ob-session:","ob-events-prev:"].forEach(k=>lsDel(k+id));
+  projects = projects.filter(p=>p.id!==id);
+  if(!projects.length) createProject("静岡学園 収録", "静岡学園");
+  saveProjects(); if(pid===id){ openProject(projects[0].id); } renderTitle();
+}
+$("b-newproj").onclick = () => {
+  const name = prompt("プロジェクトの名前（例：静岡学園 オープニング）", "静岡学園 オープニング"); if(!name) return;
+  const school = prompt("学校名", "静岡学園"); if(school===null) return;
+  createProject(name, school.trim() || "母校"); renderTitle();
+};
+
+// ---- 別の端末へ引き継ぐ（書き出し／読み込み） ----
+function projectJson(id){
+  if(id===pid) saveSession();
+  const pr = projects.find(p=>p.id===id) || {};
+  return JSON.stringify({app:"ob-taidan", v:1, id, name:pr.name, cfg:lsGet("ob-config:"+id,{}), events:lsGet("ob-events:"+id,[]), session:lsGet("ob-session:"+id,null), exportedAt:new Date().toISOString()});
+}
+async function exportProject(id, asText){
+  const json = projectJson(id), pr = projects.find(p=>p.id===id) || {name:"project"};
+  if(asText){
+    try{ await navigator.clipboard.writeText(json); alert("コードをコピーしました。メモやLINEに貼って、別の端末の「別の端末から読み込む」に貼り付けてください。"); }
+    catch(e){ prompt("このコードをコピーしてください", json); }
+    return;
+  }
+  const file = new File([json], `OB対談_${safe(pr.name)}.json`, {type:"application/json"});
+  try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:file.name}); return; } }
+  catch(e){ if(e.name==="AbortError") return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+}
+function importText(txt){
+  const m = $("imp-msg");
+  try{
+    const j = JSON.parse(txt);
+    if(j.app!=="ob-taidan" || !j.cfg) throw new Error("このアプリのデータではありません");
+    let id = j.id || newId(); if(projects.some(p=>p.id===id)) id = newId();
+    lsSet("ob-config:"+id, Object.assign(defaults(), j.cfg)); lsSet("ob-events:"+id, j.events || []);
+    if(j.session) lsSet("ob-session:"+id, j.session);
+    let name = j.name || "取り込み"; if(projects.some(p=>p.name===name)) name += "（取り込み）";
+    projects.unshift({id, name, updated:Date.now()}); saveProjects();
+    m.textContent = `「${name}」を読み込みました。一覧の「続きから」で再開できます`; renderTitle();
+  }catch(e){ m.textContent = "読み込めませんでした：" + e.message; }
+}
+$("b-import").onclick = () => $("imp-box").classList.toggle("hide");
+$("imp-go").onclick = () => importText($("imp-text").value);
+$("imp-file").onchange = e => { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = () => importText(String(r.result)); r.readAsText(f); };
+$("b-backup").onclick = () => exportProject(pid, false);
+
+// ========= スタッフ設定の画面 =========
+function renderSet(){
+  $("set-name").value = (projects.find(p=>p.id===pid)||{}).name || "";
+  $("set-school").value = cfg.school;
+  $("set-timer").value = cfg.timer;
+  $("set-warnmsg").checked = cfg.warnmsg;
+  $("set-img").value = String(cfg.imgScale||2);
+  $("set-look").value = (lsGet("ob-look","rpg"));
+  try{ $("ai-key").value = localStorage.getItem("ob-aikey") || ""; }catch(e){}
+  $("set-themes").innerHTML = ALL().map(t0=>{
+    const t = tpl(t0.id);
+    const c = cfg.themes.find(x=>x.id===t.id) || {on:false, minutes:20, mine:[]};
+    return `<tr><td><input type="checkbox" data-on="${t.id}" ${c.on?"checked":""}></td><td><input type="text" data-title="${t.id}" value="${esc(t.title)}" style="width:100%">${t.custom?` <button class="btn ghost small" data-del="${t.id}">削除</button>`:""}</td>
+      <td><input type="number" min="5" max="90" step="5" data-min="${t.id}" value="${c.minutes}"> 分</td></tr>
+      <tr><td></td><td colspan="2"><input type="text" data-lead="${t.id}" value="${esc(t.lead)}" style="width:100%" placeholder="リード（画面に出る補足）"></td></tr>
+      <tr><td></td><td colspan="2"><textarea rows="2" data-mine="${t.id}" placeholder="このテーマで先に出したい自作のお題（1行に1つ。使い切るとAIのお題に切り替わります）">${(c.mine||[]).join("\n")}</textarea></td></tr>`;
+  }).join("");
+  document.querySelectorAll("[data-on],[data-min]").forEach(e=>e.onchange=totalSet);
+  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>removeCustom(b.dataset.del));
+  totalSet();
+}
+function totalSet(){
+  let sum=0;
+  ALL().forEach(t=>{ const on=document.querySelector(`[data-on="${t.id}"]`).checked; const m=+document.querySelector(`[data-min="${t.id}"]`).value||0; if(on) sum+=m; });
+  $("set-total").textContent = `合計 ${sum}分（トークの時間のみ。自己紹介などは含みません）`;
+}
+function applyPreset(name){
+  const p = PRESETS[name];
+  TEMPLATE.forEach(t=>{
+    document.querySelector(`[data-on="${t.id}"]`).checked = t.id in p;
+    document.querySelector(`[data-min="${t.id}"]`).value = p[t.id] || 20;
+  });
+  totalSet();
+}
+// 画面の入力を cfg に取り込む（保存・削除・AI追加の前に使う）
+function collectSet(){
+  lsSet("ob-look", $("set-look").value); applyLook();
+  const pr = projects.find(p=>p.id===pid); if(pr){ pr.name = $("set-name").value.trim() || pr.name; saveProjects(); }
+  cfg.school = $("set-school").value.trim() || "母校";
+  cfg.timer = $("set-timer").value;
+  cfg.warnmsg = $("set-warnmsg").checked;
+  cfg.imgScale = +$("set-img").value || 2;
+  cfg.over = cfg.over || {};
+  ALL().forEach(t=>{ const ti = document.querySelector(`[data-title="${t.id}"]`).value.trim(), le = document.querySelector(`[data-lead="${t.id}"]`).value.trim(); cfg.over[t.id] = {title: ti || t.title, lead: le}; });
+  cfg.themes = ALL().map(t=>({id:t.id,
+    on: document.querySelector(`[data-on="${t.id}"]`).checked,
+    minutes: +document.querySelector(`[data-min="${t.id}"]`).value || 20,
+    mine: document.querySelector(`[data-mine="${t.id}"]`).value.split("\n").map(s=>s.trim()).filter(Boolean)}));
+}
+function saveAndTitle(){
+  collectSet();
+  if(!cfg.themes.some(t=>t.on)){ alert("テーマを1つ以上選んでください"); return; }
+  try{ const k=$("ai-key").value.trim(); if(k) localStorage.setItem("ob-aikey",k); else localStorage.removeItem("ob-aikey"); }catch(e){}
+  saveCfg(); show("s-title");
+}
+function removeCustom(id){
+  if(!confirm("このテーマを削除しますか？")) return;
+  collectSet();
+  cfg.custom = (cfg.custom||[]).filter(t=>t.id!==id); cfg.themes = cfg.themes.filter(t=>t.id!==id);
+  saveCfg(); renderSet();
+}
+$("b-addtheme").onclick = () => {
+  const title = prompt("テーマの名前（例：あの先輩との思い出）"); if(!title) return;
+  const lead = prompt("リード（画面に出る一言。空でもOK）", "") || "";
+  collectSet();
+  const id = "c" + Date.now() + Math.floor(Math.random()*1000);
+  (cfg.custom = cfg.custom||[]).push({id, title:title.trim(), lead:lead.trim(), hints:["この話で、一番印象に残っていることは？","そのとき、まわりはどんな様子でしたか？"], custom:true});
+  cfg.themes.push({id, on:true, minutes:20, mine:[]});
+  saveCfg(); renderSet();
+};
+$("p120").onclick = () => applyPreset("p120");
+$("p90").onclick = () => applyPreset("p90");
+$("b-set-save").onclick = saveAndTitle;
+$("b-set-save2").onclick = saveAndTitle;
+
+// ---- AIでテーマを作る ----
+function aiPrompt(){
+  const school = $("set-school").value.trim() || cfg.school;
+  const memo = $("ai-memo").value.trim();
+  return `あなたは、静岡の高校サッカーを扱うYouTubeチャンネル「NoFAKE」の企画担当です。
+${school}のOB（素人）が3人ほど、司会なしで、食べ飲みしながら90分〜2時間、当時の話をする対談番組の「大きなテーマ」を、5個考えてください。
+条件：
+- 視聴者が最後まで見たくなる、具体的で、素人でも話しやすいテーマにする
+- 各テーマに、リードの一文（lead）、なぜ見られそうか（why、一言）、話が止まったときの子お題（hints）を10個つける
+- 実在の人物名・出来事は作らない。当時のエピソードを引き出す質問にする
+- 「伸びる」という判断は、あなたの一般的な知識によるもの。データがなければ、そう断る
+${memo ? "\nメモ（参考にする）：\n"+memo+"\n" : ""}
+出力は、次のJSONだけ（前後に文章を付けない）：
+{"themes":[{"title":"","lead":"","why":"","hints":["","", "…"]}]}`;
+}
+const setAi = t => { $("ai-msg").textContent = t; };
+function parseAi(text){
+  const a = text.indexOf("{"), b = text.lastIndexOf("}");
+  if(a<0 || b<a) throw new Error("JSONが見つかりません");
+  const j = JSON.parse(text.slice(a,b+1));
+  const list = (j.themes||[]).filter(t=>t && typeof t.title==="string" && t.title.trim());
+  if(!list.length) throw new Error("テーマが入っていません");
+  return list.map(t=>({title:t.title.trim().slice(0,40), lead:String(t.lead||"").slice(0,80), why:String(t.why||"").slice(0,80),
+    hints:(Array.isArray(t.hints)?t.hints:[]).map(String).map(h=>h.trim()).filter(Boolean).slice(0,20)}));
+}
+function showCandidates(list){
+  const box = $("ai-list"); box.innerHTML = "";
+  list.forEach(t=>{
+    const d = document.createElement("div"); d.className = "cand";
+    const h = document.createElement("h3"); h.textContent = t.title; h.style.margin="0";
+    const p1 = document.createElement("p"); p1.textContent = t.lead;
+    const p2 = document.createElement("p"); p2.className = "lead"; p2.textContent = (t.why ? "見られそうな理由：" + t.why + "　" : "") + `お題${t.hints.length}個`;
+    const b = document.createElement("button"); b.className = "btn small"; b.textContent = "このテーマを追加";
+    b.onclick = () => {
+      collectSet();
+      const id = "c" + Date.now() + Math.floor(Math.random()*1000);
+      (cfg.custom = cfg.custom||[]).push({id, title:t.title, lead:t.lead, hints:t.hints.length?t.hints:["この話で、一番印象に残っていることは？"], custom:true});
+      cfg.themes.push({id, on:true, minutes:20, mine:[]});
+      saveCfg(); renderSet(); setAi(`「${t.title}」を追加しました（下の一覧で、使う・分数を決めて、保存してください）`);
+      b.disabled = true;
+    };
+    d.append(h,p1,p2,b); box.appendChild(d);
+  });
+}
+$("ai-import").onclick = () => {
+  try{ showCandidates(parseAi($("ai-paste").value)); setAi("案を読み込みました。使うテーマを追加してください"); }
+  catch(e){ setAi("読み込めませんでした：" + e.message); }
+};
+$("ai-copy").onclick = async () => {
+  const t = aiPrompt();
+  try{ await navigator.clipboard.writeText(t); setAi("依頼文をコピーしました。Claudeのチャットに貼り付けて、出てきたJSONを、下の欄に貼ってください"); }
+  catch(e){ $("ai-paste").value = t; setAi("コピーできなかったので、下の欄に依頼文を入れました。選択してコピーしてください"); }
+};
+$("ai-run").onclick = async () => {
+  const key = $("ai-key").value.trim();
+  if(!key){ setAi("APIキーを入れてください。キーがなければ、「依頼文をコピー」でClaudeに頼めます"); return; }
+  setAi("考えています…（通信が必要です。1分ほどかかります）");
+  try{
+    const r = await fetch("https://api.anthropic.com/v1/messages", {method:"POST",
+      headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body: JSON.stringify({model:"claude-sonnet-5-5", max_tokens:6000, messages:[{role:"user", content: aiPrompt()}]})});
+    const j = await r.json();
+    if(!r.ok) throw new Error((j.error && j.error.message) || r.status);
+    showCandidates(parseAi((j.content||[]).map(x=>x.text||"").join("")));
+    setAi("案ができました。使うテーマを追加してください");
+  }catch(e){ setAi("作れませんでした：" + e.message + "（通信とAPIキーを確認してください）"); }
+};
+
+// ========= 記録（押した時刻。編集の目印） =========
+// 記録は押すたびに端末へ保存する（ページを閉じても消えない）
+let events = [];
+function stamp(text, extra){
+  events.push(Object.assign({iso:new Date().toISOString(), kind:"info", text}, extra||{}));
+  if(pid) lsSet("ob-events:"+pid, events);
+}
+const hhmmss = iso => new Date(iso).toTimeString().slice(0,8);
+function renderHist(){
+  const h = $("hist"); h.innerHTML = "";
+  if(!events.length){ h.textContent = "まだ記録はありません"; return; }
+  events.forEach(e=>{
+    const d = document.createElement("div");
+    d.className = e.kind==="theme" ? "th" : "sm";
+    d.textContent = e.kind==="theme" ? `${hhmmss(e.iso)}  テーマ${e.n}「${e.title}」`
+      : e.kind==="hint" ? `${hhmmss(e.iso)}　お題（${e.src==="mine"?"自作":"AI"}）：${e.text}`
+      : `${hhmmss(e.iso)}　${e.text}`;
+    h.appendChild(d);
+  });
+  h.scrollTop = h.scrollHeight;
+}
+let backTo = "s-rules";
+function openHist(finished){
+  backTo = ["s-title","s-rules","s-intro","s-theme"].find(id=>$(id).classList.contains("on")) || "s-title";
+  if(finished){ runPhase = "end"; saveSession(); }
+  $("end-h").textContent = finished ? "ありがとうございました" : "話したテーマの記録";
+  $("end-p").classList.toggle("hide", !finished);
+  $("b-back").classList.toggle("hide", finished);
+  $("save-msg").textContent = "";
+  renderHist(); show("s-end");
+}
+$("b-log").onclick = () => openHist(false);
+$("b-back").onclick = () => show(backTo);
+$("b-rules-back").onclick = () => goTitle(false);
+$("b-end-home").onclick = () => goTitle(false);
+$("b-home").onclick = () => { if(confirm("ここまでの記録を保存して、タイトルに戻ります。\n本編は中断されます。よろしいですか？")) goTitle(true); };
+
+
+// ---- 画像と記録の書き出し ----
+function wrapText(c, text, maxW){
+  const lines=[]; let cur="";
+  for(const ch of text){ if(c.measureText(cur+ch).width > maxW && cur){ lines.push(cur); cur=ch; } else cur+=ch; }
+  if(cur) lines.push(cur); return lines;
+}
+// 2行に分けるとき、真ん中あたりで、「・」「、」などの後ろで切る（単語の途中で切らない）
+function splitMain(c, text, maxW){
+  const w = t => c.measureText(t).width;
+  if(w(text) <= maxW) return [text];
+  let best = null;
+  for(let i=1;i<text.length;i++){
+    const a = text.slice(0,i), b = text.slice(i);
+    if(w(a) > maxW || w(b) > maxW) continue;
+    let score = Math.abs(w(a)-w(b));
+    if("・、。，／？！ ".includes(text[i-1])) score *= 0.35;
+    if(b.length <= 2) score += 1e6;
+    if(!best || score < best.score) best = {score,a,b};
+  }
+  return best ? [best.a, best.b] : wrapText(c, text, maxW);
+}
+const LOGO = new Image(); LOGO.src = "logo.png";
+// 種類: "full"=背景あり / "text"=透過の文字だけ / "lower"=透過のテロップ帯（下の帯）
+function cardBlob(kind, label, main, sub){
+  const S = cfg.imgScale || 2;
+  const cv = document.createElement("canvas"); cv.width = 1920*S; cv.height = 1080*S;
+  const c = cv.getContext("2d"); c.scale(S,S);
+  const FONT = '"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif';
+  const RED = "#ff1c12", WHITE = "#f4f1ea", GRAY = "#b8b5ae";
+  const draw = (txt,x,y,size,weight,color,stroke) => {
+    c.font = `${weight} ${size}px ${FONT}`; c.textAlign="left"; c.textBaseline="alphabetic";
+    if(stroke){ c.lineJoin="round"; c.lineWidth=size*0.16; c.strokeStyle="#000"; c.strokeText(txt,x,y); }
+    c.fillStyle = color; c.fillText(txt,x,y);
+  };
+  if(kind==="lower"){
+    c.fillStyle = "rgba(11,11,12,0.92)"; c.fillRect(120,790,1680,190);
+    c.fillStyle = RED; c.fillRect(120,790,22,190);
+    draw(label,180,846,36,"900",RED,false);
+    const size = main.length>28 ? 50 : 64;
+    c.font = `900 ${size}px ${FONT}`;
+    const ls = wrapText(c, main, 1560).slice(0,2);
+    ls.forEach((l,i)=>draw(l,180,918+i*(size*1.2)-(ls.length>1?size*0.6:0),size,"900",WHITE,false));
+  } else {
+    const full = kind==="full";
+    if(full){
+      c.fillStyle = "#0b0b0c"; c.fillRect(0,0,1920,1080);
+      c.fillStyle = RED; c.fillRect(0,0,28,1080); c.fillRect(1892,0,28,1080);
+      try{ if(LOGO.complete && LOGO.naturalWidth) c.drawImage(LOGO, 96, 60, 520, 126); }catch(e){}
+      // ラベル（赤い札）
+      c.font = `900 40px ${FONT}`; const lw = c.measureText(label).width + 56;
+      c.fillStyle = RED; c.fillRect(120,236,lw,64); draw(label,148,282,40,"900","#0b0b0c",false);
+    } else {
+      draw(label,120,282,40,"900",WHITE,true);
+    }
+    const size = main.length>26 ? 96 : main.length>14 ? 128 : 160;
+    c.font = `900 ${size}px ${FONT}`;
+    const lines = splitMain(c, main, 1600);
+    let y = 590 - ((lines.length-1)*size*1.25)/2 + size*0.35;
+    lines.forEach(l=>{ draw(l,120,y,size,"900",WHITE,!full); y += size*1.25; });
+    // 赤い斜線の飾り
+    const yy = y - size*1.25 + 52;
+    c.fillStyle = RED; c.beginPath(); c.moveTo(150,yy); c.lineTo(660,yy); c.lineTo(630,yy+18); c.lineTo(120,yy+18); c.closePath(); c.fill();
+    if(sub){ c.font=`500 52px ${FONT}`; wrapText(c, sub, 1600).slice(0,2).forEach((l,i)=>draw(l,120,930+i*72,52,"500",full?GRAY:WHITE,!full)); }
+  }
+  const blob = new Promise(res=>cv.toBlob(b=>{ res(b); cv.width=0; },"image/png"));
+  return blob;
+}
+const CRC = (()=>{ const t=[]; for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+function crc32(b){ let c=0xFFFFFFFF; for(let i=0;i<b.length;i++) c = CRC[(c^b[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function makeZip(files){
+  const enc = new TextEncoder(), parts=[], central=[]; let offset=0;
+  const now = new Date(), dt = ((now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1))&0xFFFF,
+        dd = (((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate())&0xFFFF;
+  files.forEach(f=>{
+    const nm = enc.encode(f.name), crc = crc32(f.data), sz = f.data.length;
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
+    lh.setUint16(10,dt,true); lh.setUint16(12,dd,true); lh.setUint32(14,crc,true); lh.setUint32(18,sz,true); lh.setUint32(22,sz,true);
+    lh.setUint16(26,nm.length,true); lh.setUint16(28,0,true);
+    parts.push(lh.buffer, nm, f.data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
+    ch.setUint16(12,dt,true); ch.setUint16(14,dd,true); ch.setUint32(16,crc,true); ch.setUint32(20,sz,true); ch.setUint32(24,sz,true);
+    ch.setUint16(28,nm.length,true); ch.setUint32(42,offset,true);
+    central.push(ch.buffer, nm);
+    offset += 30 + nm.length + sz;
+  });
+  const csize = central.reduce((a,b)=>a+(b.byteLength??b.length),0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true); end.setUint16(8,files.length,true); end.setUint16(10,files.length,true);
+  end.setUint32(12,csize,true); end.setUint32(16,offset,true);
+  return new Blob([...parts, ...central, end.buffer], {type:"application/zip"});
+}
+const safe = s => s.replace(/[\\/:*?"<>|\s]+/g,"_").slice(0,24);
+async function exportZip(){
+  if(!events.length){ $("save-msg").textContent = "まだ記録がありません"; return; }
+  $("save-msg").textContent = "作っています…";
+  const enc = new TextEncoder(), files = [];
+  const t0 = new Date(events[0].iso);
+  const elapsed = iso => { const s=Math.round((new Date(iso)-t0)/1000); return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`; };
+  const day = t0.toISOString().slice(0,10);
+  let n = 0, curTheme = "";
+  const total = events.filter(e=>e.kind==="theme"||e.kind==="hint").length;
+  if(LOGO.decode){ try{ await LOGO.decode(); }catch(e){} }
+  for(const e of events){
+    if(e.kind==="theme" || e.kind==="hint"){
+      n++;
+      const tm = hhmmss(e.iso).replaceAll(":","-");
+      const label = e.kind==="theme" ? `テーマ ${e.n} / ${e.total}` : "お題";
+      const main = e.kind==="theme" ? e.title : e.text;
+      const sub  = e.kind==="theme" ? e.lead : e.title;
+      const base = `${String(n).padStart(2,"0")}_${e.kind==="theme"?"テーマ"+e.n:"お題"}_${safe(main)}_${tm}.png`;
+      for(const [dir,kind] of [["画像_背景あり","full"],["画像_透過（文字だけ）","text"],["画像_テロップ帯（透過）","lower"]]){
+        files.push({name:`${dir}/${base}`, data:new Uint8Array(await (await cardBlob(kind,label,main,sub)).arrayBuffer())});
+      }
+      $("save-msg").textContent = `作っています… ${n}/${total}`;
+    }
+  }
+  const rows = [["時刻","開始からの経過","種類","テーマ","内容"]];
+  events.forEach(e=>{
+    if(e.kind==="theme") curTheme = e.title;
+    rows.push([hhmmss(e.iso), elapsed(e.iso), e.kind==="theme"?"テーマ":e.kind==="hint"?(e.src==="mine"?"お題(自作)":"お題(AI)"):"出来事", e.kind==="theme"?e.title:(e.theme||curTheme), e.kind==="theme"?(e.lead||""):e.text]);
+  });
+  const csv = "﻿" + rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+  files.push({name:"記録.csv", data:enc.encode(csv)});
+  files.push({name:"記録.json", data:enc.encode(JSON.stringify(events,null,1))});
+  const zipName = `OB対談_${day}.zip`;
+  const blob = makeZip(files);
+  const file = new File([blob], zipName, {type:"application/zip"});
+  try{
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:zipName}); $("save-msg").textContent = "共有しました（AirDropやファイルへ保存）"; return; }
+  }catch(e){ if(e.name==="AbortError"){ $("save-msg").textContent = "キャンセルしました"; return; } }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = zipName; document.body.appendChild(a); a.click(); a.remove();
+  $("save-msg").textContent = `${zipName} を保存しました（${Math.round(blob.size/1024)}KB）`;
+}
+$("b-save").onclick = exportZip;
+
+// ========= 音 =========
+let ac;
+function ctx(){ if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); if(ac.state==="suspended") ac.resume(); return ac; }
+function bell(freq=880, dur=2.4, gain=0.5){
+  const a = ctx(), now = a.currentTime;
+  [1,2.76,5.4].forEach((m,i)=>{
+    const o = a.createOscillator(), g = a.createGain();
+    o.type="sine"; o.frequency.value = freq*m;
+    g.gain.setValueAtTime(gain/(i+1), now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now+dur/(i+1));
+    o.connect(g).connect(a.destination); o.start(now); o.stop(now+dur);
+  });
+}
+const chime = () => { bell(880,2.6,0.55); setTimeout(()=>bell(1175,2.6,0.45),380); };   // チーン
+const warnSound = () => { bell(660,1.2,0.3); setTimeout(()=>bell(660,1.2,0.3),500); };   // 予告音
+let wl; async function keepAwake(){ try{ wl = await navigator.wakeLock.request("screen"); }catch(e){} }
+
+// ========= 進行 =========
+$("consent").onchange = e => $("b-start").disabled = !e.target.checked;
+$("b-start").onclick = () => { ctx(); keepAwake();
+  stamp("全員そろった（同意あり）");
+  $("intro-kiki").textContent = `${cfg.school}の何期生か`; show("s-intro"); };
+$("b-intro-done").onclick = () => { stamp("自己紹介おわり"); startTheme(0); };
+
+let plan = [], idx = 0, endAt = 0, tick = null, warned = false, extended = false, upDone = false, curHint = "";
+let mineQ = [], aiQ = [];
+// 画面の表示を、今の状態（warned / upDone / extended / curHint）に合わせる。再開のときにも使う
+function paintTheme(){
+  const t = tpl(plan[idx].id);
+  $("dots").innerHTML = plan.map((_,k)=>`<div class="dot ${k<idx?"done":k===idx?"now":""}"></div>`).join("");
+  $("t-count").textContent = `${cfg.school}OB対談　テーマ ${idx+1} / ${plan.length}`;
+  $("t-title").textContent = sub(t.title);
+  typeText($("t-lead"), sub(t.lead));
+  $("t-warn").classList.toggle("hide", !(warned && cfg.warnmsg && !upDone));
+  $("t-up").classList.toggle("hide", !upDone);
+  $("t-hint").classList.toggle("hide", !curHint || upDone);
+  typeText($("t-hint-text"), curHint ? (isRpg() ? curHint : "💬 " + curHint) : "");
+  $("b-help").classList.toggle("hide", upDone);
+  $("b-extend").classList.toggle("hide", upDone || extended);
+  $("b-next").classList.toggle("hide", !upDone);
+  $("b-next").textContent = idx===plan.length-1 ? "おしまいにする" : "次のテーマを開く";
+  $("t-timer").className = cfg.timer;
+  $("t-timer").textContent = fmtMs(upDone ? 0 : endAt-Date.now());
+}
+function startTheme(i){
+  if(i===0) plan = cfg.themes.filter(t=>t.on && tpl(t.id)).map(t=>({id:t.id, minutes:t.minutes, mine:(t.mine||[]).slice()}));   // 収録中は、この並びで固定
+  idx = i;
+  const t = tpl(plan[i].id);
+  extended = false; warned = false; upDone = false; curHint = "";
+  mineQ = (plan[i].mine||[]).slice(); aiQ = shuffle(t.hints.slice());
+  endAt = Date.now() + plan[i].minutes*60*1000*SCALE;
+  stamp(`テーマ${i+1}「${sub(t.title)}」スタート`, {kind:"theme", n:i+1, total:plan.length, title:sub(t.title), lead:sub(t.lead)});
+  paintTheme(); show("s-theme");
+  clearInterval(tick); tick = setInterval(update, 250); update();
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+let lastSave = 0;
+function update(){
+  const left = Math.max(0, Math.round((endAt-Date.now())/1000));
+  $("t-timer").textContent = `${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;
+  $("t-timer").classList.toggle("warn", left<=warnSec);
+  if(!warned && left<=warnSec && left>0){
+    warned=true; warnSound(); if(cfg.warnmsg) $("t-warn").classList.remove("hide"); stamp(`テーマ${idx+1} 予告音`); saveSession();
+  }
+  if(left<=0 && !upDone){
+    upDone = true; clearInterval(tick); chime();
+    $("t-warn").classList.add("hide"); $("t-up").classList.remove("hide");
+    ["b-extend","b-help","t-hint"].forEach(id=>$(id).classList.add("hide"));
+    $("b-next").classList.remove("hide");
+    stamp(`テーマ${idx+1} チーン（時間）`); saveSession();
+  }
+  if(Date.now()-lastSave > 4000){ lastSave = Date.now(); saveSession(); }   // 4秒ごとに自動保存（電源が切れても、ここから再開できる）
+}
+$("b-help").onclick = () => {
+  // 自作のお題を先に、使い切ったらAIのお題（それも使い切ったら入れ直す）
+  let q, src;
+  if(mineQ.length){ q = mineQ.shift(); src = "mine"; }
+  else { if(!aiQ.length) aiQ = shuffle(tpl(plan[idx].id).hints.slice()); q = sub(aiQ.pop()); src = "ai"; }
+  curHint = q;
+  typeText($("t-hint-text"), isRpg() ? q : "💬 " + q);
+  $("t-hint").classList.remove("hide");
+  stamp(q, {kind:"hint", src, theme:sub(tpl(plan[idx].id).title), title:sub(tpl(plan[idx].id).title)});
+  saveSession();
+};
+$("b-extend").onclick = () => {
+  if(extended) return; extended = true; endAt += EXTEND_SEC*1000*SCALE;
+  warned = false; $("t-warn").classList.add("hide"); $("b-extend").classList.add("hide");
+  stamp(`テーマ${idx+1} 延長`); saveSession();
+};
+function renderPlan(){
+  const box = $("plan-list"); box.innerHTML = "";
+  plan.forEach((it,i)=>{
+    const t = tpl(it.id); const d = document.createElement("div"); d.className = "cand";
+    const h = document.createElement("h3"); h.style.margin = "0";
+    h.textContent = `${i<idx?"済":i===idx?"いま":"これから"}｜${sub(t.title)}（${it.minutes}分）`;
+    d.appendChild(h);
+    if(i>idx){
+      const r = document.createElement("div"); r.className = "row"; r.style.cssText = "justify-content:flex-start;margin-top:1vh";
+      r.append(mkBtn("今すぐ始める","small",()=>planJump(i)), mkBtn("↑","ghost small",()=>planMove(i,-1)), mkBtn("↓","ghost small",()=>planMove(i,1)), mkBtn("はずす","ghost small",()=>planRemove(i)));
+      d.appendChild(r);
+    }
+    box.appendChild(d);
+  });
+  const pool = $("plan-pool"); pool.innerHTML = "";
+  const rest = ALL().filter(t=>!plan.some(x=>x.id===t.id));
+  if(!rest.length) pool.textContent = "ほかのテーマはありません";
+  rest.forEach(t0=>{
+    const t = tpl(t0.id); const d = document.createElement("div"); d.className = "cand";
+    const h = document.createElement("h3"); h.style.margin = "0"; h.textContent = sub(t.title);
+    const r = document.createElement("div"); r.className = "row"; r.style.cssText = "justify-content:flex-start;margin-top:1vh";
+    r.append(mkBtn("次にする","ghost small",()=>planAdd(t.id,false)), mkBtn("今すぐ始める","small",()=>planAdd(t.id,true)));
+    d.append(h,r); pool.appendChild(d);
+  });
+}
+function planMove(i,dir){ const j = i+dir; if(j<=idx || j>=plan.length) return; [plan[i],plan[j]] = [plan[j],plan[i]]; saveSession(); renderPlan(); }
+function planRemove(i){ if(i<=idx) return; plan.splice(i,1); saveSession(); renderPlan(); }
+function planAdd(id, now){
+  const c = cfg.themes.find(x=>x.id===id) || {};
+  plan.splice(idx+1, 0, {id, minutes:c.minutes||20, mine:(c.mine||[]).slice()});
+  if(now) planJump(idx+1); else { saveSession(); renderPlan(); }
+}
+function planJump(i){
+  const nt = tpl(plan[i].id), ct = tpl(plan[idx].id);
+  if(!confirm(`「${sub(ct.title)}」を終えて、「${sub(nt.title)}」を今すぐ始めますか？`)) return;
+  const it = plan.splice(i,1)[0]; plan.splice(idx+1,0,it);
+  stamp(`テーマ変更：「${sub(ct.title)}」の途中で「${sub(nt.title)}」へ`);
+  ctx(); startTheme(idx+1);
+}
+$("b-plan").onclick = () => { renderPlan(); show("s-plan"); };
+$("b-plan-close").onclick = () => { paintTheme(); show("s-theme"); };
+$("b-next").onclick = () => {
+  if(idx < plan.length-1){ ctx(); startTheme(idx+1); }
+  else { stamp("おしまい"); openHist(true); }
+};
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+
+// ========= 起動 =========
+function initProjects(){
+  projects = lsGet("ob-projects", []);
+  if(!projects.length){
+    // 前の版（プロジェクトなし）のデータを、1つ目のプロジェクトに移す
+    const old = lsGet("ob-config", null), oldEv = lsGet("ob-events", []);
+    const id = newId();
+    projects = [{id, name:((old && old.school) || "静岡学園") + " 収録", updated:Date.now()}];
+    lsSet("ob-config:"+id, old || defaults()); lsSet("ob-events:"+id, oldEv); saveProjects();
+  }
+  const cur = lsGet("ob-cur", null);
+  openProject(projects.some(p=>p.id===cur) ? cur : projects[0].id);
+}
+applyLook(); initProjects(); show("s-title");
+</script>
+</body>
+</html>

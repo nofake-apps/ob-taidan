@@ -1,0 +1,8 @@
+{
+  "name": "OB対談 進行",
+  "short_name": "OB対談",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0b0c",
+  "theme_color": "#0b0b0c"
+}
